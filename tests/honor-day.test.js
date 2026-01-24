@@ -66,7 +66,7 @@ describe('Honor Day Attendance Report', () => {
 
     describe('User Instructions', () => {
         test('should display drop file instruction', () => {
-            expect(html).toMatch(/Drop your CSV file here/i);
+            expect(html).toMatch(/Drop your Planning Center Registration Exported CSV file here/i);
         });
 
         test('should have upload button', () => {
