@@ -121,6 +121,40 @@ describe('Honor Day Attendance Report', () => {
         });
     });
 
+    describe('Filter Functionality', () => {
+        test('should have filter section', () => {
+            expect(html).toMatch(/id="filterSection"/);
+        });
+
+        test('should have filter list container', () => {
+            expect(html).toMatch(/id="filterList"/);
+        });
+
+        test('should have select all button', () => {
+            expect(html).toMatch(/selectAllGroups\(\)/);
+        });
+
+        test('should have deselect all button', () => {
+            expect(html).toMatch(/deselectAllGroups\(\)/);
+        });
+
+        test('should have toggleGroup function', () => {
+            expect(html).toMatch(/function toggleGroup\(/);
+        });
+
+        test('should have buildFilterList function', () => {
+            expect(html).toMatch(/function buildFilterList\(/);
+        });
+
+        test('should hide filter section when printing', () => {
+            expect(html).toMatch(/\.filter-section.*display:\s*none/s);
+        });
+
+        test('should have hidden class for filtered pages', () => {
+            expect(html).toMatch(/\.attendance-page\.hidden/);
+        });
+    });
+
     describe('Print Styles', () => {
         test('should have print media query', () => {
             expect(html).toMatch(/@media print/);
