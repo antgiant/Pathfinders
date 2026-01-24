@@ -16,14 +16,15 @@ This is a GitHub Pages website containing reports and documentation for the Path
 
 ## Core Rules
 
-### 1. Commit All Changes
+### 1. Commit and Push All Changes
 
-**All changes must be committed to the repository.**
+**All changes must be committed and pushed to GitHub.**
 
 - Make atomic commits with clear, descriptive messages
 - Use conventional commit format when possible (e.g., `feat:`, `fix:`, `docs:`)
 - Never leave uncommitted changes
-- Push changes after committing
+- **Always push to GitHub immediately after committing**
+- Run `git push origin main` after every commit
 
 ### 2. Report Creation
 
@@ -125,6 +126,6 @@ Use this template when creating new reports:
 ## Questions?
 
 If instructions are unclear, prioritize:
-1. Committing all changes
+1. Committing and pushing all changes to GitHub
 2. Creating separate HTML files for reports
 3. Ensuring tests exist for new functionality
