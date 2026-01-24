@@ -163,6 +163,15 @@ describe('Attendance Sheets Report', () => {
             expect(html).toMatch(/class="page-footer"/);
             expect(html).toMatch(/Printed:/);
         });
+
+        test('should add blank write-in rows at end of each group', () => {
+            expect(html).toMatch(/write-in-row/);
+            expect(html).toMatch(/write-in-line/);
+        });
+
+        test('should have write-in line CSS styling', () => {
+            expect(html).toMatch(/\.write-in-line\s*\{/);
+        });
     });
 });
 

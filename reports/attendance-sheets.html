@@ -226,6 +226,11 @@
             font-size: 1.1rem;
         }
 
+        .write-in-line {
+            border-bottom: 1px solid #999;
+            min-height: 1.2rem;
+        }
+
         .page-footer {
             position: absolute;
             bottom: 1rem;
@@ -256,35 +261,27 @@
                 box-shadow: none;
                 margin: 0;
                 padding: 0.25in;
-                padding-bottom: 0.5in;
+                padding-bottom: 0.4in;
                 min-height: auto;
-                height: 10in;
-                max-height: 10in;
                 border-radius: 0;
-                overflow: hidden;
                 position: relative;
-                page-break-after: always;
-                page-break-inside: avoid;
+                break-after: page;
+                break-inside: avoid;
             }
 
             .attendance-page:last-child {
-                page-break-after: auto;
+                break-after: auto;
             }
 
             .group-header {
-                font-size: 20pt;
-                margin-bottom: 0.15in;
-                padding: 0.1in;
-            }
-
-            .attendance-list {
-                max-height: 8.5in;
-                overflow: hidden;
+                font-size: 18pt;
+                margin-bottom: 0.1in;
+                padding: 0.08in;
             }
 
             .attendance-row {
-                font-size: 11pt;
-                padding: 0.12in 0.1in;
+                font-size: 10pt;
+                padding: 0.08in 0.1in;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -517,6 +514,22 @@
                         </li>
                     `;
                 });
+
+                // Add 3 blank rows for write-ins
+                const startNum = members.length + 1;
+                for (let i = 0; i < 3; i++) {
+                    html += `
+                        <li class="attendance-row write-in-row">
+                            <span class="row-number">${startNum + i}.</span>
+                            <span class="checkbox-cell"><span class="checkbox"></span></span>
+                            <span class="shirt-checkbox">
+                                <span class="checkbox"></span>
+                                <span class="shirt-emoji">👕</span>
+                            </span>
+                            <span class="attendee-name write-in-line"></span>
+                        </li>
+                    `;
+                }
 
                 html += '</ul>';
                 html += `<div class="page-footer">Printed: ${printDate}</div>`;
