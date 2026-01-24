@@ -45,17 +45,22 @@ When creating a new report:
 
 ### 3. Testing Requirements
 
-**All items must have tests.**
+**All changes must have corresponding tests.**
 
-- Every new feature or report must include corresponding tests
+- Every new feature, report, or bug fix must include corresponding tests
+- Every modification to existing code must update or add tests
 - Place tests in the `tests/` directory
-- Test files should mirror the structure they're testing
-- Run all tests before committing
+- Test files should mirror the structure they're testing (e.g., `reports/attendance-sheets.html` → `tests/attendance-sheets.test.js`)
+- Run all tests before committing: `npm test`
+- All tests must pass before committing
 - Tests should verify:
   - HTML validity and structure
   - Links are not broken
   - Required elements are present
+  - JavaScript functionality works correctly
   - Accessibility standards are met
+  - CSS classes and styles are defined
+  - Print styles are properly configured
 
 ## File Structure
 
