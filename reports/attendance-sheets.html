@@ -263,16 +263,12 @@
             .attendance-page {
                 box-shadow: none;
                 margin: 0;
-                padding: 0.3in 0.25in;
-                padding-bottom: 0.5in;
-                min-height: 9.5in;
-                height: 9.5in;
+                padding: 0.4in;
+                padding-bottom: 0.6in;
                 border-radius: 0;
                 position: relative;
                 break-after: page;
                 break-inside: avoid;
-                display: flex;
-                flex-direction: column;
             }
 
             .attendance-page:last-child {
@@ -290,7 +286,6 @@
             .attendance-list {
                 margin: 0;
                 padding: 0;
-                flex: 1;
             }
 
             .attendance-row {
@@ -324,19 +319,18 @@
             }
 
             .page-footer {
-                position: absolute;
-                bottom: 0.2in;
-                left: 0.25in;
-                right: 0.25in;
+                position: fixed;
+                bottom: 0.3in;
+                left: 0.4in;
+                right: 0.4in;
                 font-size: 8pt;
-                padding-top: 0.05in;
                 text-align: center;
             }
         }
 
         @page {
             size: letter;
-            margin: 0;
+            margin: 0.4in;
         }
     </style>
 </head>
