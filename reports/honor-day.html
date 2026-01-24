@@ -176,6 +176,25 @@
             color: white;
         }
 
+        .filter-search {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .filter-search:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .filter-item.search-hidden {
+            display: none;
+        }
+
         .filter-list {
             display: flex;
             flex-wrap: wrap;
@@ -447,6 +466,7 @@
         </div>
         <div class="filter-section" id="filterSection">
             <h3>🔍 Filter Groups to Print</h3>
+            <input type="text" class="filter-search" id="filterSearch" placeholder="Search groups..." oninput="filterGroupList()">
             <div class="filter-controls">
                 <button onclick="selectAllGroups()">Select All</button>
                 <button onclick="deselectAllGroups()">Deselect All</button>
@@ -749,28 +769,47 @@
         }
 
         function selectAllGroups() {
-            const checkboxes = document.querySelectorAll('.filter-list input[type="checkbox"]');
+            const filterItems = document.querySelectorAll('.filter-item:not(.search-hidden)');
             const pages = document.querySelectorAll('.attendance-page');
             
-            checkboxes.forEach((cb, index) => {
+            filterItems.forEach((item) => {
+                const cb = item.querySelector('input[type="checkbox"]');
+                const index = parseInt(cb.id.replace('filter-', ''));
                 cb.checked = true;
                 pages[index].classList.remove('hidden');
             });
         }
 
         function deselectAllGroups() {
-            const checkboxes = document.querySelectorAll('.filter-list input[type="checkbox"]');
+            const filterItems = document.querySelectorAll('.filter-item:not(.search-hidden)');
             const pages = document.querySelectorAll('.attendance-page');
             
-            checkboxes.forEach((cb, index) => {
+            filterItems.forEach((item) => {
+                const cb = item.querySelector('input[type="checkbox"]');
+                const index = parseInt(cb.id.replace('filter-', ''));
                 cb.checked = false;
                 pages[index].classList.add('hidden');
+            });
+        }
+
+        function filterGroupList() {
+            const searchTerm = document.getElementById('filterSearch').value.toLowerCase();
+            const filterItems = document.querySelectorAll('.filter-item');
+            
+            filterItems.forEach((item) => {
+                const groupName = item.querySelector('span').textContent.toLowerCase();
+                if (groupName.includes(searchTerm)) {
+                    item.classList.remove('search-hidden');
+                } else {
+                    item.classList.add('search-hidden');
+                }
             });
         }
 
         function resetReport() {
             sheetsContainer.innerHTML = '';
             document.getElementById('filterList').innerHTML = '';
+            document.getElementById('filterSearch').value = '';
             fileInput.value = '';
             reportContainer.style.display = 'none';
             uploadContainer.style.display = 'flex';

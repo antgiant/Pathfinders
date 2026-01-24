@@ -130,6 +130,23 @@ describe('Honor Day Attendance Report', () => {
             expect(html).toMatch(/id="filterList"/);
         });
 
+        test('should have filter search input', () => {
+            expect(html).toMatch(/id="filterSearch"/);
+            expect(html).toMatch(/class="filter-search"/);
+        });
+
+        test('should have filterGroupList function for search', () => {
+            expect(html).toMatch(/function filterGroupList\(/);
+        });
+
+        test('should have search-hidden CSS class for hidden filter items', () => {
+            expect(html).toMatch(/\.filter-item\.search-hidden/);
+        });
+
+        test('search should filter by group name', () => {
+            expect(html).toMatch(/groupName\.includes\(searchTerm\)/);
+        });
+
         test('should have select all button', () => {
             expect(html).toMatch(/selectAllGroups\(\)/);
         });
