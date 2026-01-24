@@ -219,11 +219,6 @@ describe('Honor Day Attendance Report', () => {
             expect(html).toMatch(/checkbox/);
         });
 
-        test('should include shirt emoji checkbox', () => {
-            expect(html).toMatch(/shirt-emoji/);
-            expect(html).toMatch(/👕/);
-        });
-
         test('should include attendee name', () => {
             expect(html).toMatch(/attendee-name/);
         });

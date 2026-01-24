@@ -297,16 +297,6 @@
             display: inline-block;
         }
 
-        .shirt-checkbox {
-            width: 3rem;
-            white-space: nowrap;
-        }
-
-        .shirt-emoji {
-            font-size: 0.9rem;
-            margin-left: 2px;
-        }
-
         .attendee-name {
             padding-left: 0.5rem;
         }
@@ -418,14 +408,6 @@
                 width: 0.7rem;
                 height: 0.7rem;
                 border-width: 1.5px;
-            }
-
-            .shirt-checkbox {
-                width: 2rem;
-            }
-
-            .shirt-emoji {
-                font-size: 0.7rem;
             }
 
             .attendee-name {
@@ -697,7 +679,7 @@
                 page.className = 'attendance-page';
 
                 let html = `<table class="attendance-table">`;
-                html += `<thead><tr><th colspan="4" class="group-header">${groupName}</th></tr></thead>`;
+                html += `<thead><tr><th colspan="3" class="group-header">${groupName}</th></tr></thead>`;
                 html += '<tbody>';
 
                 members.forEach((member, index) => {
@@ -706,7 +688,6 @@
                         <tr class="${rowClass}">
                             <td class="row-number">${index + 1}.</td>
                             <td class="checkbox-cell"><span class="checkbox"></span></td>
-                            <td class="shirt-checkbox"><span class="checkbox"></span><span class="shirt-emoji">👕</span></td>
                             <td class="attendee-name">${member.firstName} ${member.lastName}</td>
                         </tr>
                     `;
@@ -720,7 +701,6 @@
                         <tr class="${rowClass}">
                             <td class="row-number">${startNum + i}.</td>
                             <td class="checkbox-cell"><span class="checkbox"></span></td>
-                            <td class="shirt-checkbox"><span class="checkbox"></span><span class="shirt-emoji">👕</span></td>
                             <td class="attendee-name write-in-line"></td>
                         </tr>
                     `;
