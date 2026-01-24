@@ -260,8 +260,8 @@
             .attendance-page {
                 box-shadow: none;
                 margin: 0;
-                padding: 0.25in;
-                padding-bottom: 0.4in;
+                padding: 0.15in 0.25in;
+                padding-bottom: 0.3in;
                 min-height: auto;
                 border-radius: 0;
                 position: relative;
@@ -274,27 +274,54 @@
             }
 
             .group-header {
-                font-size: 18pt;
-                margin-bottom: 0.1in;
-                padding: 0.08in;
+                font-size: 14pt;
+                margin-bottom: 0.05in;
+                padding: 0.05in;
+                border-bottom-width: 2px;
+            }
+
+            .attendance-list {
+                margin: 0;
+                padding: 0;
             }
 
             .attendance-row {
-                font-size: 10pt;
-                padding: 0.08in 0.1in;
+                font-size: 9pt;
+                padding: 2pt 0.1in;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                line-height: 1.2;
             }
 
             .attendance-row:nth-child(even) {
                 background-color: #e8f4fc !important;
             }
 
+            .row-number {
+                width: 1.5rem;
+                font-size: 9pt;
+            }
+
+            .checkbox {
+                width: 0.9rem;
+                height: 0.9rem;
+            }
+
+            .shirt-emoji {
+                font-size: 0.8rem;
+            }
+
+            .attendee-name {
+                font-size: 9pt;
+            }
+
             .page-footer {
                 position: absolute;
-                bottom: 0.25in;
-                left: 0.5in;
-                right: 0.5in;
+                bottom: 0.15in;
+                left: 0.25in;
+                right: 0.25in;
+                font-size: 8pt;
+                padding-top: 0.05in;
             }
         }
 
