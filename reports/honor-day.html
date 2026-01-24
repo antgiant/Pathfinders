@@ -342,6 +342,10 @@
                 margin: 0;
             }
 
+            .attendance-page.hidden {
+                display: none !important;
+            }
+
             .attendance-page {
                 box-shadow: none;
                 margin: 0;
@@ -354,7 +358,7 @@
                 break-inside: auto;
             }
 
-            .attendance-page:not(:last-child) {
+            .attendance-page:not(:last-child):not(.hidden) {
                 break-after: page;
                 page-break-after: always;
             }

@@ -170,6 +170,10 @@ describe('Honor Day Attendance Report', () => {
         test('should have hidden class for filtered pages', () => {
             expect(html).toMatch(/\.attendance-page\.hidden/);
         });
+
+        test('hidden pages should not print', () => {
+            expect(html).toMatch(/@media print[\s\S]*\.attendance-page\.hidden[\s\S]*display:\s*none\s*!important/);
+        });
     });
 
     describe('Print Styles', () => {
