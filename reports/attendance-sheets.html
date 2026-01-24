@@ -255,18 +255,36 @@
             .attendance-page {
                 box-shadow: none;
                 margin: 0;
-                padding: 0.5in;
+                padding: 0.25in;
+                padding-bottom: 0.5in;
                 min-height: auto;
+                height: 10in;
+                max-height: 10in;
                 border-radius: 0;
+                overflow: hidden;
+                position: relative;
+                page-break-after: always;
+                page-break-inside: avoid;
+            }
+
+            .attendance-page:last-child {
+                page-break-after: auto;
             }
 
             .group-header {
-                font-size: 24pt;
+                font-size: 20pt;
+                margin-bottom: 0.15in;
+                padding: 0.1in;
+            }
+
+            .attendance-list {
+                max-height: 8.5in;
+                overflow: hidden;
             }
 
             .attendance-row {
-                font-size: 12pt;
-                padding: 0.4rem 0.25rem;
+                font-size: 11pt;
+                padding: 0.12in 0.1in;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -276,14 +294,16 @@
             }
 
             .page-footer {
-                position: fixed;
+                position: absolute;
                 bottom: 0.25in;
+                left: 0.5in;
+                right: 0.5in;
             }
         }
 
         @page {
             size: letter;
-            margin: 0.5in;
+            margin: 0.25in;
         }
     </style>
 </head>
