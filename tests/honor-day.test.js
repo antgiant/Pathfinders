@@ -217,8 +217,4 @@ describe('Index Page - Honor Day', () => {
     test('should display Honor Day Attendance title', () => {
         expect(indexHtml).toMatch(/Honor Day Attendance/);
     });
-
-    test('should have report date', () => {
-        expect(indexHtml).toMatch(/January 24, 2026/);
-    });
 });

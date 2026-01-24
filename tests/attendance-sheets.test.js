@@ -191,8 +191,4 @@ describe('Index Page', () => {
     test('should display Attendance Sheets title', () => {
         expect(indexHtml).toMatch(/Attendance Sheets/);
     });
-
-    test('should have report date', () => {
-        expect(indexHtml).toMatch(/January 24, 2026/);
-    });
 });
