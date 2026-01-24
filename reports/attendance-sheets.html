@@ -267,12 +267,13 @@
                 padding-bottom: 0.6in;
                 border-radius: 0;
                 position: relative;
-                break-after: page;
                 break-inside: avoid;
+                page-break-inside: avoid;
             }
 
-            .attendance-page:last-child {
-                break-after: auto;
+            .attendance-page:not(:last-child) {
+                break-after: page;
+                page-break-after: always;
             }
 
             .group-header {
