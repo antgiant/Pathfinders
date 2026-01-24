@@ -149,11 +149,15 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 9in;
         }
 
         .attendance-table {
             width: 100%;
             border-collapse: collapse;
+            flex-shrink: 0;
         }
 
         .group-header {
@@ -223,10 +227,7 @@
         }
 
         .page-footer {
-            position: absolute;
-            bottom: 1rem;
-            left: 1.5rem;
-            right: 1.5rem;
+            margin-top: auto;
             text-align: center;
             font-size: 0.85rem;
             color: #666;
@@ -256,7 +257,10 @@
                 margin: 0;
                 padding: 0;
                 border-radius: 0;
-                position: relative;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                height: 100vh;
                 break-inside: auto;
             }
 
@@ -335,18 +339,17 @@
             }
 
             .page-footer {
-                position: fixed;
-                bottom: 0.5in;
-                left: 0.3in;
-                right: 0.3in;
+                margin-top: auto;
+                padding: 0.1in 0;
                 font-size: 7pt;
                 text-align: center;
+                border-top: none;
             }
         }
 
         @page {
             size: letter;
-            margin: 0.3in 0.3in 0.7in 0.3in;
+            margin: 0.3in;
         }
     </style>
 </head>
