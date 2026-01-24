@@ -257,6 +257,7 @@
                 padding: 0;
                 border-radius: 0;
                 position: relative;
+                break-inside: auto;
             }
 
             .attendance-page:not(:last-child) {
@@ -267,20 +268,33 @@
             .attendance-table {
                 width: 100%;
                 border-collapse: collapse;
+                break-inside: auto;
             }
 
             .attendance-table thead {
                 display: table-header-group;
             }
 
+            .attendance-table thead tr {
+                break-inside: avoid;
+                break-after: avoid;
+            }
+
             .attendance-table tbody {
                 display: table-row-group;
+            }
+
+            .attendance-table tbody tr {
+                break-inside: avoid;
             }
 
             .group-header {
                 font-size: 12pt;
                 padding: 3pt 0;
-                    padding-top: 0.25in;
+                padding-top: 0.25in;
+                border-bottom-width: 2px;
+            }
+
             .attendance-row td {
                 font-size: 8pt;
                 padding: 1.5pt 2pt;
@@ -290,7 +304,8 @@
             }
 
             .attendance-row.even-row {
-                    background-color: #f0f0f0 !important;
+                background-color: #f0f0f0 !important;
+            }
 
             .row-number {
                 width: 1.2rem;
