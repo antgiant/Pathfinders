@@ -493,24 +493,30 @@
 
         function getTimeOrder(columnName) {
             // Extract time for sorting
-            // Lunch items should come after morning classes but before afternoon
+            // Lunch items should come at noon
             const lowerName = columnName.toLowerCase();
             if (lowerName.startsWith('lunch')) {
                 return 1200; // Noon
             }
             
             // Extract time from format like "8:00-10:00 am" or "1:00-3:00 pm"
-            const timeMatch = columnName.match(/^(\d{1,2}):(\d{2})(?:-\d{1,2}:\d{2})?\s*(am|pm)?/i);
+            // Look for am/pm anywhere in the string after the time
+            const timeMatch = columnName.match(/^(\d{1,2}):(\d{2})/);
+            const periodMatch = columnName.match(/\b(am|pm)\b/i);
+            
             if (timeMatch) {
                 let hour = parseInt(timeMatch[1]);
                 const minutes = parseInt(timeMatch[2]);
-                const period = (timeMatch[3] || '').toLowerCase();
+                const period = periodMatch ? periodMatch[1].toLowerCase() : '';
                 
                 // Convert to 24-hour for sorting
                 if (period === 'pm' && hour !== 12) {
                     hour += 12;
                 } else if (period === 'am' && hour === 12) {
                     hour = 0;
+                } else if (!period && hour < 8) {
+                    // Assume times 1-7 without am/pm are PM
+                    hour += 12;
                 }
                 
                 return hour * 100 + minutes;
