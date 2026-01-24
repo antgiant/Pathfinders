@@ -78,10 +78,18 @@
         }
 
         .drop-zone input[type="file"] {
-            display: none;
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
         }
 
         .upload-btn {
+            display: inline-block;
             background-color: var(--secondary-color);
             color: white;
             padding: 0.75rem 2rem;
@@ -289,9 +297,9 @@
             <h2>📋 Attendance Sheets Generator</h2>
             <p>Drop your CSV file here or click to upload</p>
             <input type="file" id="fileInput" accept=".csv">
-            <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('fileInput').click();">
+            <label for="fileInput" class="upload-btn">
                 Choose File
-            </button>
+            </label>
         </div>
     </div>
 
@@ -331,16 +339,11 @@
             }
         });
 
+        // Click on dropzone area (not on label/button) opens file dialog
         dropZone.addEventListener('click', (e) => {
-            // Only trigger if clicking on the dropzone itself, not on child elements
             if (e.target === dropZone || e.target.tagName === 'H2' || e.target.tagName === 'P') {
                 fileInput.click();
             }
-        });
-
-        // Prevent file input click from bubbling
-        fileInput.addEventListener('click', (e) => {
-            e.stopPropagation();
         });
 
         fileInput.addEventListener('change', (e) => {
