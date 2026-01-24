@@ -335,18 +335,13 @@
             }
 
             .page-footer {
-                position: fixed;
-                bottom: 0.2in;
-                left: 0.3in;
-                right: 0.3in;
-                font-size: 7pt;
-                text-align: center;
+                display: none;
             }
         }
 
         @page {
             size: letter;
-            margin: 0.3in 0.3in 0.5in 0.3in;
+            margin: 0.3in;
         }
     </style>
 </head>
@@ -527,7 +522,8 @@
             });
 
             // Generate HTML for each group
-            const printDate = new Date().toLocaleString('en-US', {
+            const now = new Date();
+            const printDate = now.toLocaleString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
@@ -536,6 +532,12 @@
                 minute: '2-digit',
                 hour12: true
             });
+
+            // Update document title with date for PDF filename
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            document.title = `Attendance Sheets ${year}-${month}-${day}`;
 
             sheetsContainer.innerHTML = '';
 
