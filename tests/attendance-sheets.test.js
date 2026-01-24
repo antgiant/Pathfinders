@@ -125,7 +125,8 @@ describe('Attendance Sheets Report', () => {
         test('should have semantic HTML elements', () => {
             expect(html).toMatch(/<nav>/);
             expect(html).toMatch(/<h1/);
-            expect(html).toMatch(/<h2/);
+            // Group headers use table th elements for semantic table structure
+            expect(html).toMatch(/group-header/);
         });
 
         test('should have button elements for actions', () => {
