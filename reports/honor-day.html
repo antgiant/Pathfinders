@@ -799,13 +799,23 @@
         function filterGroupList() {
             const searchTerm = document.getElementById('filterSearch').value.toLowerCase();
             const filterItems = document.querySelectorAll('.filter-item');
+            const pages = document.querySelectorAll('.attendance-page');
             
             filterItems.forEach((item) => {
+                const cb = item.querySelector('input[type="checkbox"]');
+                const index = parseInt(cb.id.replace('filter-', ''));
                 const groupName = item.querySelector('span').textContent.toLowerCase();
+                
                 if (groupName.includes(searchTerm)) {
                     item.classList.remove('search-hidden');
+                    // Show page if checkbox is checked and matches search
+                    if (cb.checked) {
+                        pages[index].classList.remove('hidden');
+                    }
                 } else {
                     item.classList.add('search-hidden');
+                    // Hide pages that don't match search
+                    pages[index].classList.add('hidden');
                 }
             });
         }
