@@ -43,6 +43,44 @@ When creating a new report:
    </li>
    ```
 5. Remove or hide the empty state if this is the first report
+6. Include collapsible info sections (see below)
+
+### Report Info Sections
+
+**Every report must include collapsible info sections** using `<details>` elements. These sections provide documentation while keeping the main interface clean. Place them in a `.info-section` container below the drop zone.
+
+Required sections:
+
+1. **"What does this report do?"** - A brief description of what the report generates and its purpose
+2. **"Required CSV columns"** - List the column names needed (use `<code>` tags) and where to export the data from
+3. **"Sample output"** - A visual preview of what the generated report looks like
+
+Example structure:
+```html
+<div class="info-section">
+    <details>
+        <summary>What does this report do?</summary>
+        <div class="details-content">
+            Description of the report's functionality.
+        </div>
+    </details>
+    <details>
+        <summary>Required CSV columns</summary>
+        <div class="details-content">
+            <code>Column1</code>, <code>Column2</code>, <code>Column3</code><br>
+            <small>Export from Source → Location → Export</small>
+        </div>
+    </details>
+    <details>
+        <summary>Sample output</summary>
+        <div class="details-content">
+            <div class="sample-output">
+                <!-- Visual preview of output -->
+            </div>
+        </div>
+    </details>
+</div>
+```
 
 ### 3. Testing Requirements
 
@@ -58,6 +96,7 @@ When creating a new report:
   - HTML validity and structure
   - Links are not broken
   - Required elements are present
+  - Info sections are present with all three required details elements
   - JavaScript functionality works correctly
   - Accessibility standards are met
   - CSS classes and styles are defined
