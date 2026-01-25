@@ -704,24 +704,20 @@
             }
             
             // Extract time from format like "8:00-10:00 am" or "1:00-3:00 pm"
-            // Look for am/pm anywhere in the string after the time
             const timeMatch = columnName.match(/^(\d{1,2}):(\d{2})/);
-            const periodMatch = columnName.match(/\b(am|pm)\b/i);
             
             if (timeMatch) {
                 let hour = parseInt(timeMatch[1]);
                 const minutes = parseInt(timeMatch[2]);
-                const period = periodMatch ? periodMatch[1].toLowerCase() : '';
                 
-                // Convert to 24-hour for sorting
-                if (period === 'pm' && hour !== 12) {
-                    hour += 12;
-                } else if (period === 'am' && hour === 12) {
-                    hour = 0;
-                } else if (!period && hour < 8) {
-                    // Assume times 1-7 without am/pm are PM
-                    hour += 12;
+                // Use logical ordering based on hour value:
+                // - Hours 8-12 are morning/noon (8:00, 9:00, 10:00, 11:00, 12:00)
+                // - Hours 1-7 are afternoon (1:00 PM = 13:00, etc.)
+                // This handles cases where CSV data marks 10:00-12:00 as "pm"
+                if (hour >= 1 && hour <= 7) {
+                    hour += 12; // Convert 1-7 to 13-19 (PM)
                 }
+                // Hours 8-12 stay as-is (morning through noon)
                 
                 return hour * 100 + minutes;
             }
