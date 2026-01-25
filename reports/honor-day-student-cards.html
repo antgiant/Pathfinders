@@ -628,15 +628,34 @@
             
             const cleaned = cleanColumnName(columnName);
             
-            // Find the honor name - it's after the time/duration part
-            // Pattern: time - honor name in location
-            const honorMatch = cleaned.match(/^\d{1,2}:\d{2}[^-]*-\s*(.+)$/i);
+            // Match time range, optional am/pm, duration in parentheses, then capture honor name
+            // Pattern: time-time am/pm (duration) - honor name in location
+            const honorMatch = cleaned.match(/^\d{1,2}:\d{2}(?:-\d{1,2}:\d{2})?\s*(?:am|pm)?\s*\([^)]+\)\s*-\s*(.+)$/i);
             
             if (honorMatch) {
                 const honorPart = honorMatch[1].trim();
                 
                 // Try to split into honor name and location
                 // Location usually starts with "in " or "in the "
+                const locationMatch = honorPart.match(/^(.+?)\s+in\s+(?:the\s+)?(.+)$/i);
+                
+                if (locationMatch) {
+                    return {
+                        honor: locationMatch[1].trim(),
+                        location: locationMatch[2].trim()
+                    };
+                }
+                
+                return {
+                    honor: honorPart,
+                    location: ''
+                };
+            }
+            
+            // Fallback for formats without parenthetical duration (like "8:00-9:00 am - Self Taught Honors")
+            const simpleFallback = cleaned.match(/^\d{1,2}:\d{2}(?:-\d{1,2}:\d{2})?\s*(?:am|pm)?\s*-\s*(.+)$/i);
+            if (simpleFallback) {
+                const honorPart = simpleFallback[1].trim();
                 const locationMatch = honorPart.match(/^(.+?)\s+in\s+(?:the\s+)?(.+)$/i);
                 
                 if (locationMatch) {
