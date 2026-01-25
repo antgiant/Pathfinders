@@ -89,7 +89,7 @@ describe('Honor Day Student Cards Report', () => {
         test('should document required columns', () => {
             expect(html).toMatch(/<code>First Name<\/code>/);
             expect(html).toMatch(/<code>Last Name<\/code>/);
-            expect(html).toMatch(/<code>Club<\/code>/);
+            expect(html).toMatch(/Club Name/);
         });
 
         test('should have sample card output', () => {
@@ -146,6 +146,26 @@ describe('Honor Day Student Cards Report', () => {
 
         test('should have createCardHTML function', () => {
             expect(html).toMatch(/function createCardHTML\(/);
+        });
+
+        test('should have isLunchColumn function', () => {
+            expect(html).toMatch(/function isLunchColumn\(/);
+        });
+
+        test('should have extractLunchItem function', () => {
+            expect(html).toMatch(/function extractLunchItem\(/);
+        });
+
+        test('should have extractHonorInfo function', () => {
+            expect(html).toMatch(/function extractHonorInfo\(/);
+        });
+
+        test('should have findClubColumn function', () => {
+            expect(html).toMatch(/function findClubColumn\(/);
+        });
+
+        test('should collapse lunch items into single entry', () => {
+            expect(html).toMatch(/lunchItems\.join/);
         });
 
         test('should filter columns starting with lunch', () => {
@@ -218,6 +238,14 @@ describe('Honor Day Student Cards Report', () => {
 
         test('should have schedule-honor class', () => {
             expect(html).toMatch(/\.schedule-honor\s*\{/);
+        });
+
+        test('should have schedule-location class for location display', () => {
+            expect(html).toMatch(/\.schedule-location\s*\{/);
+        });
+
+        test('should have schedule-content container', () => {
+            expect(html).toMatch(/\.schedule-content\s*\{/);
         });
 
         test('should have schedule-initial class for teacher initials', () => {

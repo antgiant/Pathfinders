@@ -175,13 +175,24 @@
             text-align: left;
             padding: 0.15rem 0;
             display: flex;
-            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.3rem;
         }
 
         .info-section .sample-initial-line {
             border-bottom: 1px solid #999;
-            width: 30px;
+            width: 25px;
             display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .info-section .sample-content {
+            flex: 1;
+        }
+
+        .info-section .sample-location {
+            font-size: 0.6rem;
+            color: #666;
         }
 
         .upload-btn {
@@ -307,21 +318,35 @@
             border-bottom: none;
         }
 
+        .schedule-initial {
+            width: 30px;
+            border-bottom: 1px solid #333;
+            min-height: 1rem;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+
         .schedule-time {
-            min-width: 95px;
+            min-width: 90px;
             font-weight: 500;
             color: #555;
+            flex-shrink: 0;
+        }
+
+        .schedule-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
         }
 
         .schedule-honor {
-            flex: 1;
-            padding-right: 0.5rem;
+            font-weight: 500;
         }
 
-        .schedule-initial {
-            width: 40px;
-            border-bottom: 1px solid #333;
-            min-height: 1rem;
+        .schedule-location {
+            font-size: 0.75rem;
+            color: #666;
         }
 
         /* Print styles */
@@ -383,12 +408,16 @@
                 padding: 0.15rem 0;
             }
 
-            .schedule-time {
-                min-width: 80px;
+            .schedule-initial {
+                width: 25px;
             }
 
-            .schedule-initial {
-                width: 35px;
+            .schedule-time {
+                min-width: 75px;
+            }
+
+            .schedule-location {
+                font-size: 6pt;
             }
         }
 
@@ -422,7 +451,7 @@
             <details>
                 <summary>Required CSV columns</summary>
                 <div class="details-content">
-                    <code>First Name</code>, <code>Last Name</code>, <code>Club</code>, plus columns with headers containing time patterns like <code>8:00-10:00 am</code> and honor names.<br>
+                    <code>First Name</code>, <code>Last Name</code>, plus a column containing <code>Club Name</code> in its header, and columns with time patterns like <code>8:00-10:00 am</code> for honors and <code>Lunch - ...</code> for lunch items.<br>
                     <small>Export from Planning Center → Registrations → Export</small>
                 </div>
             </details>
@@ -435,19 +464,19 @@
                             <div class="sample-card-name">John Smith</div>
                             <div class="sample-card-club">Trailblazers</div>
                             <div class="sample-schedule-item">
+                                <span class="sample-initial-line"></span>
                                 <span>8:00-10:00 am</span>
-                                <span>Beekeeping</span>
-                                <span class="sample-initial-line"></span>
+                                <span class="sample-content">Beekeeping<br><span class="sample-location">Room #11</span></span>
                             </div>
                             <div class="sample-schedule-item">
-                                <span>10:00-12:00 pm</span>
-                                <span>First Aid</span>
                                 <span class="sample-initial-line"></span>
+                                <span>Lunch</span>
+                                <span class="sample-content">(Pizza, Chips, Drink)</span>
                             </div>
                             <div class="sample-schedule-item">
+                                <span class="sample-initial-line"></span>
                                 <span>1:00-3:00 pm</span>
-                                <span>Camping Skills</span>
-                                <span class="sample-initial-line"></span>
+                                <span class="sample-content">Camping Skills<br><span class="sample-location">Lower Youth Center</span></span>
                             </div>
                         </div>
                     </div>
@@ -573,9 +602,59 @@
             return false;
         }
 
+        function isLunchColumn(columnName) {
+            return columnName.toLowerCase().startsWith('lunch');
+        }
+
+        function extractLunchItem(columnName) {
+            // Extract item from "Lunch - Pizza Slice" -> "Pizza Slice"
+            const match = columnName.match(/^Lunch\s*-\s*(.+)$/i);
+            if (match) {
+                return match[1].trim();
+            }
+            return columnName.replace(/^lunch\s*/i, '').trim();
+        }
+
         function cleanColumnName(columnName) {
             // Remove " - Click on time to see options for honors"
             return columnName.replace(/ - Click on time to see options for honors/gi, '');
+        }
+
+        function extractHonorInfo(columnName) {
+            // Extract honor name and location from column header
+            // Example: "8:00-10:00 am (2 Hours) - Click on time to see options for honors - Pickleball (level 2) in the Warehouse"
+            // After cleaning: "8:00-10:00 am (2 Hours) - Pickleball (level 2) in the Warehouse"
+            
+            const cleaned = cleanColumnName(columnName);
+            
+            // Find the honor name - it's after the time/duration part
+            // Pattern: time - honor name in location
+            const honorMatch = cleaned.match(/^\d{1,2}:\d{2}[^-]*-\s*(.+)$/i);
+            
+            if (honorMatch) {
+                const honorPart = honorMatch[1].trim();
+                
+                // Try to split into honor name and location
+                // Location usually starts with "in " or "in the "
+                const locationMatch = honorPart.match(/^(.+?)\s+in\s+(?:the\s+)?(.+)$/i);
+                
+                if (locationMatch) {
+                    return {
+                        honor: locationMatch[1].trim(),
+                        location: locationMatch[2].trim()
+                    };
+                }
+                
+                return {
+                    honor: honorPart,
+                    location: ''
+                };
+            }
+            
+            return {
+                honor: cleaned,
+                location: ''
+            };
         }
 
         function extractTimeSlot(columnName) {
@@ -589,6 +668,11 @@
                 return 'Lunch';
             }
             return columnName;
+        }
+
+        function findClubColumn(headers) {
+            // Find column containing "club name" (case insensitive)
+            return headers.find(h => h.toLowerCase().includes('club name')) || null;
         }
 
         function getTimeOrder(columnName) {
@@ -628,34 +712,65 @@
         function generateReport(data) {
             const { headers, rows } = data;
             
+            // Find the club name column
+            const clubColumn = findClubColumn(headers);
+            
             // Find columns that start with "lunch" or a time
             const honorColumns = headers.filter(isHonorColumn);
             
-            // Sort columns by time
-            honorColumns.sort((a, b) => getTimeOrder(a) - getTimeOrder(b));
+            // Separate lunch columns from regular honor columns
+            const lunchColumns = honorColumns.filter(isLunchColumn);
+            const regularHonorColumns = honorColumns.filter(c => !isLunchColumn(c));
+            
+            // Sort regular honor columns by time
+            regularHonorColumns.sort((a, b) => getTimeOrder(a) - getTimeOrder(b));
             
             // Build student schedules
             const students = rows.map(row => {
                 const schedule = [];
                 
-                honorColumns.forEach(column => {
+                // Process regular honor columns
+                regularHonorColumns.forEach(column => {
                     const value = row[column];
                     if (value && value.trim() !== '') {
+                        const honorInfo = extractHonorInfo(column);
                         schedule.push({
                             time: extractTimeSlot(cleanColumnName(column)),
-                            honor: value.trim(),
+                            honor: honorInfo.honor,
+                            location: honorInfo.location,
                             sortOrder: getTimeOrder(column)
                         });
                     }
                 });
                 
+                // Collect lunch items into a single entry
+                const lunchItems = [];
+                lunchColumns.forEach(column => {
+                    const value = row[column];
+                    if (value && value.trim() !== '') {
+                        lunchItems.push(extractLunchItem(column));
+                    }
+                });
+                
+                if (lunchItems.length > 0) {
+                    schedule.push({
+                        time: 'Lunch',
+                        honor: '(' + lunchItems.join(', ') + ')',
+                        location: '',
+                        sortOrder: 1200 // Noon
+                    });
+                }
+                
                 // Sort schedule by time
                 schedule.sort((a, b) => a.sortOrder - b.sortOrder);
+                
+                // Get club name from the club column
+                const clubName = clubColumn ? (row[clubColumn] || '') : '';
                 
                 return {
                     firstName: row['First Name'] || '',
                     lastName: row['Last Name'] || '',
-                    club: row['Club'] || '',
+                    club: clubName,
                     schedule: schedule
                 };
             }).filter(student => student.schedule.length > 0);
@@ -721,11 +836,15 @@
             const itemsToShow = student.schedule.slice(0, maxItems);
             
             itemsToShow.forEach(item => {
+                const locationHtml = item.location ? `<span class="schedule-location">${item.location}</span>` : '';
                 html += `
                     <div class="schedule-item">
-                        <span class="schedule-time">${item.time}</span>
-                        <span class="schedule-honor">${item.honor}</span>
                         <span class="schedule-initial"></span>
+                        <span class="schedule-time">${item.time}</span>
+                        <span class="schedule-content">
+                            <span class="schedule-honor">${item.honor}</span>
+                            ${locationHtml}
+                        </span>
                     </div>
                 `;
             });
