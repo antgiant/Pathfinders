@@ -331,6 +331,7 @@
             font-weight: 500;
             color: #555;
             flex-shrink: 0;
+            margin-right: 0.5rem;
         }
 
         .schedule-content {
@@ -465,7 +466,7 @@
                             <div class="sample-card-club">Trailblazers</div>
                             <div class="sample-schedule-item">
                                 <span class="sample-initial-line"></span>
-                                <span>8:00-10:00 am</span>
+                                <span>8:00-10:00</span>
                                 <span class="sample-content">Beekeeping<br><span class="sample-location">Room #11</span></span>
                             </div>
                             <div class="sample-schedule-item">
@@ -475,7 +476,7 @@
                             </div>
                             <div class="sample-schedule-item">
                                 <span class="sample-initial-line"></span>
-                                <span>1:00-3:00 pm</span>
+                                <span>1:00-3:00</span>
                                 <span class="sample-content">Camping Skills<br><span class="sample-location">Lower Youth Center</span></span>
                             </div>
                         </div>
@@ -658,8 +659,8 @@
         }
 
         function extractTimeSlot(columnName) {
-            // Extract just the time portion like "8:00-10:00 am"
-            const match = columnName.match(/^(\d{1,2}:\d{2}(?:-\d{1,2}:\d{2})?\s*(?:am|pm)?)/i);
+            // Extract just the time portion like "8:00-10:00" (without am/pm)
+            const match = columnName.match(/^(\d{1,2}:\d{2}(?:-\d{1,2}:\d{2})?)\s*(?:am|pm)?/i);
             if (match) {
                 return match[1].trim();
             }
