@@ -1120,42 +1120,59 @@
             return indices;
         }
 
+        function renderStudentCards(students) {
+            const cardsContainer = document.getElementById('cardsContainer');
+            cardsContainer.innerHTML = '';
+
+            if (students.length === 0) {
+                cardsContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">No students match the current filter.</div>';
+                return;
+            }
+
+            // Create pages with 4 cards each
+            const cardsPerPage = 4;
+            const totalPages = Math.ceil(students.length / cardsPerPage);
+
+            for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+                const page = document.createElement('div');
+                page.className = 'card-page';
+
+                for (let cardIndex = 0; cardIndex < cardsPerPage; cardIndex++) {
+                    const studentIndex = pageIndex * cardsPerPage + cardIndex;
+                    const card = document.createElement('div');
+                    
+                    if (studentIndex < students.length) {
+                        const student = students[studentIndex];
+                        const itemCount = Math.min(student.schedule.length, 9);
+                        card.className = `student-card items-${itemCount}`;
+                        card.innerHTML = createCardHTML(student);
+                    } else {
+                        // Empty card placeholder
+                        card.className = 'student-card empty';
+                    }
+                    
+                    page.appendChild(card);
+                }
+
+                cardsContainer.appendChild(page);
+            }
+        }
+
         function applyFilters() {
             const selectedClubs = getSelectedClubs();
             const selectedPeople = getSelectedPeople();
-            const pages = document.querySelectorAll('.card-page');
             
-            // Determine which students are visible
-            const visibleStudents = [];
-            allStudents.forEach((student, index) => {
+            // Filter students based on selected clubs AND selected people
+            const filteredStudents = allStudents.filter((student, index) => {
+                // Club filter: student must have no club OR club must be selected
                 const clubMatch = !student.club || selectedClubs.has(student.club);
+                // Person filter: student index must be in selected indices
                 const personMatch = selectedPeople.has(index);
-                if (clubMatch && personMatch) {
-                    visibleStudents.push(index);
-                }
+                return clubMatch && personMatch;
             });
             
-            // Show/hide pages based on whether they contain visible students
-            const cardsPerPage = 4;
-            pages.forEach((page, pageIndex) => {
-                const startIndex = pageIndex * cardsPerPage;
-                const endIndex = startIndex + cardsPerPage;
-                
-                // Check if any student on this page is visible
-                let hasVisibleStudent = false;
-                for (let i = startIndex; i < endIndex && i < allStudents.length; i++) {
-                    if (visibleStudents.includes(i)) {
-                        hasVisibleStudent = true;
-                        break;
-                    }
-                }
-                
-                if (hasVisibleStudent) {
-                    page.classList.remove('hidden');
-                } else {
-                    page.classList.add('hidden');
-                }
-            });
+            // Regenerate the cards with only filtered students
+            renderStudentCards(filteredStudents);
         }
 
         function selectAllClubs() {
