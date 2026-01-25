@@ -309,10 +309,18 @@
         .schedule-item {
             display: flex;
             align-items: flex-start;
-            padding: 0.1rem 0;
+            padding: 0.1rem 0.2rem;
             font-size: 0.75rem;
             border-bottom: 1px dotted #eee;
             line-height: 1.2;
+        }
+
+        .schedule-item:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+
+        .schedule-item:nth-child(even) {
+            background-color: #ffffff;
         }
 
         .schedule-item:last-child {
@@ -472,7 +480,17 @@
 
             .schedule-item {
                 font-size: 7pt;
-                padding: 0.08rem 0;
+                padding: 0.08rem 0.1rem;
+            }
+
+            .schedule-item:nth-child(odd) {
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .schedule-item:nth-child(even) {
+                background-color: #ffffff !important;
             }
 
             .schedule-initial {
