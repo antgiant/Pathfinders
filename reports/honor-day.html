@@ -89,6 +89,84 @@
             border: 0;
         }
 
+        .info-section {
+            width: 100%;
+            max-width: 500px;
+            margin-top: 1.5rem;
+        }
+
+        .info-section details {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border: 1px solid #ddd;
+        }
+
+        .info-section summary {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--primary-color);
+            list-style: none;
+        }
+
+        .info-section summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .info-section summary::before {
+            content: '▶ ';
+            font-size: 0.7rem;
+            margin-right: 0.5rem;
+        }
+
+        .info-section details[open] summary::before {
+            content: '▼ ';
+        }
+
+        .info-section .details-content {
+            padding: 0 1rem 1rem 1rem;
+            font-size: 0.9rem;
+            color: #555;
+            text-align: left;
+        }
+
+        .info-section code {
+            background: #f4f4f4;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .info-section .sample-output {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            font-family: inherit;
+        }
+
+        .info-section .sample-row {
+            display: flex;
+            align-items: center;
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-section .sample-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-section .sample-checkbox {
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid #333;
+            border-radius: 2px;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+
         .upload-btn {
             display: inline-block;
             background-color: var(--secondary-color);
@@ -442,6 +520,32 @@
             <label for="fileInput" class="upload-btn">
                 Choose File
             </label>
+        </div>
+        <div class="info-section">
+            <details>
+                <summary>What does this report do?</summary>
+                <div class="details-content">
+                    Generates printable attendance sheets for Honor Day classes. Groups attendees by time slot and honor name, with filtering to print only the classes you need.
+                </div>
+            </details>
+            <details>
+                <summary>Required CSV columns</summary>
+                <div class="details-content">
+                    <code>First Name</code>, <code>Last Name</code>, plus columns with headers containing time patterns like <code>8:00-10:00 am</code> and honor names.<br>
+                    <small>Export from Planning Center → Registrations → Export</small>
+                </div>
+            </details>
+            <details>
+                <summary>Sample output</summary>
+                <div class="details-content">
+                    <div class="sample-output">
+                        <strong style="font-size: 0.95rem;">8:00-10:00 am · Beekeeping (level 2)</strong>
+                        <div class="sample-row"><span style="margin-right: 0.5rem;">1.</span><span class="sample-checkbox"></span>John Smith</div>
+                        <div class="sample-row"><span style="margin-right: 0.5rem;">2.</span><span class="sample-checkbox"></span>Jane Doe</div>
+                        <div class="sample-row" style="color: #999;"><span style="margin-right: 0.5rem;">3.</span><span class="sample-checkbox"></span>_______________</div>
+                    </div>
+                </div>
+            </details>
         </div>
     </div>
 
