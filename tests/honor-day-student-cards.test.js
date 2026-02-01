@@ -345,12 +345,24 @@ describe('Honor Day Student Cards Report', () => {
             expect(html).toMatch(/at Forest Lake/);
         });
 
-        test('should include Forest Lake Pathfinder logo', () => {
-            expect(html).toMatch(/FOREST LAKE/);
-            expect(html).toMatch(/PATHFINDER/);
+        test('should use Pathfinder Logo.png for backside', () => {
+            expect(html).toMatch(/src="Pathfinder Logo\.png"/);
         });
 
-        test('should format date for backside', () => {
+        test('should have date input field for user-entered date', () => {
+            expect(html).toMatch(/id="backsideDate"/);
+            expect(html).toMatch(/type="date"/);
+        });
+
+        test('should have date-input-group class', () => {
+            expect(html).toMatch(/class="date-input-group"/);
+        });
+
+        test('should have date-input class', () => {
+            expect(html).toMatch(/class="date-input"/);
+        });
+
+        test('should format user-entered date with toLocaleDateString', () => {
             expect(html).toMatch(/toLocaleDateString\('en-US'/);
         });
 
@@ -360,6 +372,10 @@ describe('Honor Day Student Cards Report', () => {
 
         test('should restore original content after printing backside', () => {
             expect(html).toMatch(/cardsContainer\.innerHTML = originalContent/);
+        });
+
+        test('should get date from backsideDate input', () => {
+            expect(html).toMatch(/getElementById\('backsideDate'\)/);
         });
     });
 });

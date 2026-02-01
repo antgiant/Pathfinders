@@ -385,6 +385,31 @@
             background-color: #1e8449;
         }
 
+        .date-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .date-input-group label {
+            font-size: 0.95rem;
+            color: var(--primary-color);
+        }
+
+        .date-input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
         /* Backside card styles */
         .backside-page {
             background: white;
@@ -792,6 +817,10 @@
             <button class="print-btn" onclick="window.print()">🖨️ Print Student Cards</button>
             <button class="print-btn backside-btn" onclick="printBackside()">🔄 Print Card Backs</button>
             <button class="print-btn reset-btn" onclick="resetReport()">↩️ Upload New File</button>
+            <div class="date-input-group">
+                <label for="backsideDate">📅 Card Back Date:</label>
+                <input type="date" id="backsideDate" class="date-input">
+            </div>
         </div>
         <div class="filter-section" id="filterSection">
             <h3>🔍 Filter Cards to Print</h3>
@@ -1401,10 +1430,22 @@
                 return;
             }
 
-            // Format current date
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = now.toLocaleDateString('en-US', options);
+            // Get user-entered date or use current date as fallback
+            const dateInput = document.getElementById('backsideDate');
+            let formattedDate = '';
+            
+            if (dateInput.value) {
+                // Parse the date input value and format it
+                const dateParts = dateInput.value.split('-');
+                const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                formattedDate = dateObj.toLocaleDateString('en-US', options);
+            } else {
+                // Use current date as fallback
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                formattedDate = now.toLocaleDateString('en-US', options);
+            }
 
             // Store current content
             const originalContent = cardsContainer.innerHTML;
@@ -1416,22 +1457,22 @@
                     <div class="backside-page">
                         <div class="backside-card">
                             <div class="backside-title">Welcome to Honor Day<br>at Forest Lake!</div>
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 220'%3E%3C!-- Outer yellow arc --%3E%3Cpath d='M30 80 Q100 10 170 80' fill='none' stroke='%23FFD700' stroke-width='20'/%3E%3C!-- Red banner with FOREST LAKE --%3E%3Crect x='25' y='65' width='150' height='25' fill='%23CC0000' rx='3'/%3E%3Ctext x='100' y='83' text-anchor='middle' fill='white' font-family='Arial Black, sans-serif' font-size='14' font-weight='bold'%3EFOREST LAKE%3C/text%3E%3C!-- Main red shield --%3E%3Cpath d='M35 90 L35 150 Q35 200 100 215 Q165 200 165 150 L165 90 Z' fill='%23CC0000'/%3E%3C!-- Yellow inner border --%3E%3Cpath d='M45 95 L45 148 Q45 190 100 205 Q155 190 155 148 L155 95 Z' fill='none' stroke='%23FFD700' stroke-width='3'/%3E%3C!-- PATHFINDER text banner --%3E%3Crect x='45' y='100' width='110' height='20' fill='%23FFD700'/%3E%3Ctext x='100' y='115' text-anchor='middle' fill='%23CC0000' font-family='Arial Black, sans-serif' font-size='12' font-weight='bold'%3EPATHFINDER%3C/text%3E%3C!-- Sword --%3E%3Cline x1='85' y1='130' x2='85' y2='190' stroke='%234169E1' stroke-width='6'/%3E%3Cline x1='75' y1='140' x2='95' y2='140' stroke='%234169E1' stroke-width='4'/%3E%3Ccircle cx='85' cy='130' r='5' fill='%234169E1'/%3E%3C!-- Open book --%3E%3Cpath d='M95 145 Q110 140 125 145 L125 185 Q110 180 95 185 Z' fill='%23DEB887' stroke='%238B4513' stroke-width='1'/%3E%3Cpath d='M95 145 Q80 140 65 145 L65 185 Q80 180 95 185 Z' fill='%23F5DEB3' stroke='%238B4513' stroke-width='1'/%3E%3Cline x1='95' y1='145' x2='95' y2='185' stroke='%238B4513' stroke-width='2'/%3E%3C!-- CLUB text at bottom --%3E%3Ctext x='100' y='200' text-anchor='middle' fill='%23FFD700' font-family='Arial, sans-serif' font-size='10' font-weight='bold'%3ECLUB%3C/text%3E%3C/svg%3E" alt="Forest Lake Pathfinder Club" class="backside-logo">
+                            <img src="Pathfinder Logo.png" alt="Forest Lake Pathfinder Club" class="backside-logo">
                             <div class="backside-date">${formattedDate}</div>
                         </div>
                         <div class="backside-card">
                             <div class="backside-title">Welcome to Honor Day<br>at Forest Lake!</div>
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 220'%3E%3C!-- Outer yellow arc --%3E%3Cpath d='M30 80 Q100 10 170 80' fill='none' stroke='%23FFD700' stroke-width='20'/%3E%3C!-- Red banner with FOREST LAKE --%3E%3Crect x='25' y='65' width='150' height='25' fill='%23CC0000' rx='3'/%3E%3Ctext x='100' y='83' text-anchor='middle' fill='white' font-family='Arial Black, sans-serif' font-size='14' font-weight='bold'%3EFOREST LAKE%3C/text%3E%3C!-- Main red shield --%3E%3Cpath d='M35 90 L35 150 Q35 200 100 215 Q165 200 165 150 L165 90 Z' fill='%23CC0000'/%3E%3C!-- Yellow inner border --%3E%3Cpath d='M45 95 L45 148 Q45 190 100 205 Q155 190 155 148 L155 95 Z' fill='none' stroke='%23FFD700' stroke-width='3'/%3E%3C!-- PATHFINDER text banner --%3E%3Crect x='45' y='100' width='110' height='20' fill='%23FFD700'/%3E%3Ctext x='100' y='115' text-anchor='middle' fill='%23CC0000' font-family='Arial Black, sans-serif' font-size='12' font-weight='bold'%3EPATHFINDER%3C/text%3E%3C!-- Sword --%3E%3Cline x1='85' y1='130' x2='85' y2='190' stroke='%234169E1' stroke-width='6'/%3E%3Cline x1='75' y1='140' x2='95' y2='140' stroke='%234169E1' stroke-width='4'/%3E%3Ccircle cx='85' cy='130' r='5' fill='%234169E1'/%3E%3C!-- Open book --%3E%3Cpath d='M95 145 Q110 140 125 145 L125 185 Q110 180 95 185 Z' fill='%23DEB887' stroke='%238B4513' stroke-width='1'/%3E%3Cpath d='M95 145 Q80 140 65 145 L65 185 Q80 180 95 185 Z' fill='%23F5DEB3' stroke='%238B4513' stroke-width='1'/%3E%3Cline x1='95' y1='145' x2='95' y2='185' stroke='%238B4513' stroke-width='2'/%3E%3C!-- CLUB text at bottom --%3E%3Ctext x='100' y='200' text-anchor='middle' fill='%23FFD700' font-family='Arial, sans-serif' font-size='10' font-weight='bold'%3ECLUB%3C/text%3E%3C/svg%3E" alt="Forest Lake Pathfinder Club" class="backside-logo">
+                            <img src="Pathfinder Logo.png" alt="Forest Lake Pathfinder Club" class="backside-logo">
                             <div class="backside-date">${formattedDate}</div>
                         </div>
                         <div class="backside-card">
                             <div class="backside-title">Welcome to Honor Day<br>at Forest Lake!</div>
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 220'%3E%3C!-- Outer yellow arc --%3E%3Cpath d='M30 80 Q100 10 170 80' fill='none' stroke='%23FFD700' stroke-width='20'/%3E%3C!-- Red banner with FOREST LAKE --%3E%3Crect x='25' y='65' width='150' height='25' fill='%23CC0000' rx='3'/%3E%3Ctext x='100' y='83' text-anchor='middle' fill='white' font-family='Arial Black, sans-serif' font-size='14' font-weight='bold'%3EFOREST LAKE%3C/text%3E%3C!-- Main red shield --%3E%3Cpath d='M35 90 L35 150 Q35 200 100 215 Q165 200 165 150 L165 90 Z' fill='%23CC0000'/%3E%3C!-- Yellow inner border --%3E%3Cpath d='M45 95 L45 148 Q45 190 100 205 Q155 190 155 148 L155 95 Z' fill='none' stroke='%23FFD700' stroke-width='3'/%3E%3C!-- PATHFINDER text banner --%3E%3Crect x='45' y='100' width='110' height='20' fill='%23FFD700'/%3E%3Ctext x='100' y='115' text-anchor='middle' fill='%23CC0000' font-family='Arial Black, sans-serif' font-size='12' font-weight='bold'%3EPATHFINDER%3C/text%3E%3C!-- Sword --%3E%3Cline x1='85' y1='130' x2='85' y2='190' stroke='%234169E1' stroke-width='6'/%3E%3Cline x1='75' y1='140' x2='95' y2='140' stroke='%234169E1' stroke-width='4'/%3E%3Ccircle cx='85' cy='130' r='5' fill='%234169E1'/%3E%3C!-- Open book --%3E%3Cpath d='M95 145 Q110 140 125 145 L125 185 Q110 180 95 185 Z' fill='%23DEB887' stroke='%238B4513' stroke-width='1'/%3E%3Cpath d='M95 145 Q80 140 65 145 L65 185 Q80 180 95 185 Z' fill='%23F5DEB3' stroke='%238B4513' stroke-width='1'/%3E%3Cline x1='95' y1='145' x2='95' y2='185' stroke='%238B4513' stroke-width='2'/%3E%3C!-- CLUB text at bottom --%3E%3Ctext x='100' y='200' text-anchor='middle' fill='%23FFD700' font-family='Arial, sans-serif' font-size='10' font-weight='bold'%3ECLUB%3C/text%3E%3C/svg%3E" alt="Forest Lake Pathfinder Club" class="backside-logo">
+                            <img src="Pathfinder Logo.png" alt="Forest Lake Pathfinder Club" class="backside-logo">
                             <div class="backside-date">${formattedDate}</div>
                         </div>
                         <div class="backside-card">
                             <div class="backside-title">Welcome to Honor Day<br>at Forest Lake!</div>
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 220'%3E%3C!-- Outer yellow arc --%3E%3Cpath d='M30 80 Q100 10 170 80' fill='none' stroke='%23FFD700' stroke-width='20'/%3E%3C!-- Red banner with FOREST LAKE --%3E%3Crect x='25' y='65' width='150' height='25' fill='%23CC0000' rx='3'/%3E%3Ctext x='100' y='83' text-anchor='middle' fill='white' font-family='Arial Black, sans-serif' font-size='14' font-weight='bold'%3EFOREST LAKE%3C/text%3E%3C!-- Main red shield --%3E%3Cpath d='M35 90 L35 150 Q35 200 100 215 Q165 200 165 150 L165 90 Z' fill='%23CC0000'/%3E%3C!-- Yellow inner border --%3E%3Cpath d='M45 95 L45 148 Q45 190 100 205 Q155 190 155 148 L155 95 Z' fill='none' stroke='%23FFD700' stroke-width='3'/%3E%3C!-- PATHFINDER text banner --%3E%3Crect x='45' y='100' width='110' height='20' fill='%23FFD700'/%3E%3Ctext x='100' y='115' text-anchor='middle' fill='%23CC0000' font-family='Arial Black, sans-serif' font-size='12' font-weight='bold'%3EPATHFINDER%3C/text%3E%3C!-- Sword --%3E%3Cline x1='85' y1='130' x2='85' y2='190' stroke='%234169E1' stroke-width='6'/%3E%3Cline x1='75' y1='140' x2='95' y2='140' stroke='%234169E1' stroke-width='4'/%3E%3Ccircle cx='85' cy='130' r='5' fill='%234169E1'/%3E%3C!-- Open book --%3E%3Cpath d='M95 145 Q110 140 125 145 L125 185 Q110 180 95 185 Z' fill='%23DEB887' stroke='%238B4513' stroke-width='1'/%3E%3Cpath d='M95 145 Q80 140 65 145 L65 185 Q80 180 95 185 Z' fill='%23F5DEB3' stroke='%238B4513' stroke-width='1'/%3E%3Cline x1='95' y1='145' x2='95' y2='185' stroke='%238B4513' stroke-width='2'/%3E%3C!-- CLUB text at bottom --%3E%3Ctext x='100' y='200' text-anchor='middle' fill='%23FFD700' font-family='Arial, sans-serif' font-size='10' font-weight='bold'%3ECLUB%3C/text%3E%3C/svg%3E" alt="Forest Lake Pathfinder Club" class="backside-logo">
+                            <img src="Pathfinder Logo.png" alt="Forest Lake Pathfinder Club" class="backside-logo">
                             <div class="backside-date">${formattedDate}</div>
                         </div>
                     </div>
