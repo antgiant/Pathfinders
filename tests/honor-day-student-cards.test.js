@@ -303,6 +303,65 @@ describe('Honor Day Student Cards Report', () => {
             expect(html).toMatch(/padStart\(2, '0'\)/);
         });
     });
+
+    describe('Backside Printing', () => {
+        test('should have printBackside function', () => {
+            expect(html).toMatch(/function printBackside\(/);
+        });
+
+        test('should have Print Card Backs button', () => {
+            expect(html).toMatch(/Print Card Backs/);
+        });
+
+        test('should have backside-btn class', () => {
+            expect(html).toMatch(/class="print-btn backside-btn"/);
+        });
+
+        test('should have backside-page class for layout', () => {
+            expect(html).toMatch(/\.backside-page\s*\{/);
+        });
+
+        test('should have backside-card class', () => {
+            expect(html).toMatch(/\.backside-card\s*\{/);
+        });
+
+        test('should have backside-title class', () => {
+            expect(html).toMatch(/\.backside-title\s*\{/);
+        });
+
+        test('should have backside-logo class', () => {
+            expect(html).toMatch(/\.backside-logo\s*\{/);
+        });
+
+        test('should have backside-date class', () => {
+            expect(html).toMatch(/\.backside-date\s*\{/);
+        });
+
+        test('should display Welcome to Honor Day message', () => {
+            expect(html).toMatch(/Welcome to Honor Day/);
+        });
+
+        test('should display Forest Lake text', () => {
+            expect(html).toMatch(/at Forest Lake/);
+        });
+
+        test('should include Forest Lake Pathfinder logo', () => {
+            expect(html).toMatch(/FOREST LAKE/);
+            expect(html).toMatch(/PATHFINDER/);
+        });
+
+        test('should format date for backside', () => {
+            expect(html).toMatch(/toLocaleDateString\('en-US'/);
+        });
+
+        test('should have print styles for backside pages', () => {
+            expect(html).toMatch(/\.backside-page[\s\S]*?break-inside:\s*avoid/);
+        });
+
+        test('should restore original content after printing backside', () => {
+            expect(html).toMatch(/cardsContainer\.innerHTML = originalContent/);
+        });
+    });
 });
 
 describe('Index Page - Honor Day Student Cards', () => {
