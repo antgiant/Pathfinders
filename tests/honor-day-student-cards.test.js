@@ -377,6 +377,31 @@ describe('Honor Day Student Cards Report', () => {
         test('should get date from backsideDate input', () => {
             expect(html).toMatch(/getElementById\('backsideDate'\)/);
         });
+
+        test('should have backside section visible on upload screen', () => {
+            expect(html).toMatch(/class="backside-section"/);
+        });
+
+        test('should have printBacksideOnly function', () => {
+            expect(html).toMatch(/function printBacksideOnly\(/);
+        });
+
+        test('should have page count input', () => {
+            expect(html).toMatch(/id="pageCount"/);
+            expect(html).toMatch(/type="number"/);
+        });
+
+        test('should have separate date input for upload screen', () => {
+            expect(html).toMatch(/id="backsideDateUpload"/);
+        });
+
+        test('should have backside controls container', () => {
+            expect(html).toMatch(/class="backside-controls"/);
+        });
+
+        test('should have page-count-input class', () => {
+            expect(html).toMatch(/class="page-count-input"/);
+        });
     });
 });
 
