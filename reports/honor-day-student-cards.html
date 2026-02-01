@@ -1624,16 +1624,39 @@
             reportContainer.style.display = 'block';
             cardsContainer.innerHTML = backsideHTML;
 
-            // Print
-            setTimeout(() => {
-                window.print();
-                // Return to upload screen after print
-                setTimeout(() => {
+            // Wait for images to load, then print
+            const images = cardsContainer.querySelectorAll('img');
+            let loadedCount = 0;
+            const totalImages = images.length;
+
+            function onImageLoad() {
+                loadedCount++;
+                if (loadedCount >= totalImages) {
+                    // All images loaded, now print
+                    window.print();
+                    // Return to upload screen after print dialog closes
                     cardsContainer.innerHTML = '';
                     reportContainer.style.display = 'none';
                     uploadContainer.style.display = 'flex';
-                }, 100);
-            }, 100);
+                }
+            }
+
+            if (totalImages === 0) {
+                // No images, print immediately
+                window.print();
+                cardsContainer.innerHTML = '';
+                reportContainer.style.display = 'none';
+                uploadContainer.style.display = 'flex';
+            } else {
+                images.forEach(img => {
+                    if (img.complete) {
+                        onImageLoad();
+                    } else {
+                        img.addEventListener('load', onImageLoad);
+                        img.addEventListener('error', onImageLoad); // Handle errors too
+                    }
+                });
+            }
         }
     </script>
 </body>
