@@ -214,15 +214,39 @@
         /* Filter section styles */
         .filter-section {
             background: white;
-            padding: 1rem;
             margin-bottom: 1rem;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e3e3e3;
+            overflow: hidden;
         }
 
-        .filter-section h3 {
-            margin-bottom: 0.75rem;
+        .filter-section summary {
+            padding: 1rem;
+            cursor: pointer;
             color: var(--primary-color);
+            font-weight: 600;
+            list-style: none;
+        }
+
+        .filter-section summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .filter-section summary::before {
+            content: '▶ ';
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .filter-section[open] summary::before {
+            content: '▼ ';
+        }
+
+        .filter-content {
+            padding: 0 1rem 1rem 1rem;
         }
 
         .filter-row {
@@ -834,7 +858,7 @@
             <details>
                 <summary>Required CSV columns</summary>
                 <div class="details-content">
-                    <code>First Name</code>, <code>Last Name</code>, plus a column containing <code>Club Name</code> in its header, and columns with time patterns like <code>8:00-10:00 am</code> for honors and <code>Lunch - ...</code> for lunch items.<br>
+                    <code>First Name</code>, <code>Last Name</code>, plus a column containing <code>Club Name</code> in its header, and columns with time patterns like <code>8:00-10:00 am</code> for honors and <code>Lunch - ...</code> for lunch items. Class filters are built from honor names and locations in those time columns.<br>
                     <small>Export from Planning Center → Registrations → Export</small>
                 </div>
             </details>
@@ -893,44 +917,72 @@
                 <input type="date" id="backsideDate" class="date-input">
             </div>
         </div>
-        <div class="filter-section" id="filterSection">
-            <h3>🔍 Filter Cards to Print</h3>
-            <div class="filter-row">
-                <div class="filter-group">
-                    <label>Lunch Filters</label>
-                    <div class="filter-item">
-                        <input type="checkbox" id="extraHungryOnly" onchange="applyFilters()">
-                        <label for="extraHungryOnly"><span>Extra Hungry (any lunch item x2+)</span></label>
+        <details class="filter-section" id="filterSection">
+            <summary>🔍 Filter Cards to Print</summary>
+            <div class="filter-content">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Lunch Filters</label>
+                        <div class="filter-item">
+                            <input type="checkbox" id="extraHungryOnly" onchange="applyFilters()">
+                            <label for="extraHungryOnly"><span>Extra Hungry (any lunch item x2+)</span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Filter by Honor Class</label>
+                        <div class="search-wrapper">
+                            <input type="text" class="filter-search" id="classSearch" placeholder="Search honor classes..." oninput="filterClassList()">
+                            <button class="clear-btn" onclick="clearClassSearch()">✕</button>
+                        </div>
+                        <div class="filter-controls">
+                            <button onclick="selectAllClasses()">Select All</button>
+                            <button onclick="deselectAllClasses()">Deselect All</button>
+                        </div>
+                        <div class="filter-list" id="classFilterList"></div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Filter by Lunch Selection</label>
+                        <div class="search-wrapper">
+                            <input type="text" class="filter-search" id="lunchSearch" placeholder="Search lunch items..." oninput="filterLunchList()">
+                            <button class="clear-btn" onclick="clearLunchSearch()">✕</button>
+                        </div>
+                        <div class="filter-controls">
+                            <button onclick="selectAllLunchItems()">Select All</button>
+                            <button onclick="deselectAllLunchItems()">Deselect All</button>
+                        </div>
+                        <div class="filter-list" id="lunchFilterList"></div>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Filter by Club Name</label>
+                        <div class="search-wrapper">
+                            <input type="text" class="filter-search" id="clubSearch" placeholder="Search clubs..." oninput="filterClubList()">
+                            <button class="clear-btn" onclick="clearClubSearch()">✕</button>
+                        </div>
+                        <div class="filter-controls">
+                            <button onclick="selectAllClubs()">Select All</button>
+                            <button onclick="deselectAllClubs()">Deselect All</button>
+                        </div>
+                        <div class="filter-list" id="clubFilterList"></div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Filter by Person Name</label>
+                        <div class="search-wrapper">
+                            <input type="text" class="filter-search" id="personSearch" placeholder="Search people..." oninput="filterPersonList()">
+                            <button class="clear-btn" onclick="clearPersonSearch()">✕</button>
+                        </div>
+                        <div class="filter-controls">
+                            <button onclick="selectAllPeople()">Select All</button>
+                            <button onclick="deselectAllPeople()">Deselect All</button>
+                        </div>
+                        <div class="filter-list" id="personFilterList"></div>
                     </div>
                 </div>
             </div>
-            <div class="filter-row">
-                <div class="filter-group">
-                    <label>Filter by Club Name</label>
-                    <div class="search-wrapper">
-                        <input type="text" class="filter-search" id="clubSearch" placeholder="Search clubs..." oninput="filterClubList()">
-                        <button class="clear-btn" onclick="clearClubSearch()">✕</button>
-                    </div>
-                    <div class="filter-controls">
-                        <button onclick="selectAllClubs()">Select All</button>
-                        <button onclick="deselectAllClubs()">Deselect All</button>
-                    </div>
-                    <div class="filter-list" id="clubFilterList"></div>
-                </div>
-                <div class="filter-group">
-                    <label>Filter by Person Name</label>
-                    <div class="search-wrapper">
-                        <input type="text" class="filter-search" id="personSearch" placeholder="Search people..." oninput="filterPersonList()">
-                        <button class="clear-btn" onclick="clearPersonSearch()">✕</button>
-                    </div>
-                    <div class="filter-controls">
-                        <button onclick="selectAllPeople()">Select All</button>
-                        <button onclick="deselectAllPeople()">Deselect All</button>
-                    </div>
-                    <div class="filter-list" id="personFilterList"></div>
-                </div>
-            </div>
-        </div>
+        </details>
         <div id="cardsContainer"></div>
     </div>
 
@@ -1162,6 +1214,13 @@
             return headers.find(h => h.toLowerCase().includes('club name')) || null;
         }
 
+        function formatClassLabel(honor, location) {
+            if (location) {
+                return `${honor} (${location})`;
+            }
+            return honor;
+        }
+
         function getTimeOrder(columnName) {
             // Extract time for sorting
             // Lunch items should come at noon
@@ -1212,12 +1271,15 @@
             const students = rows.map(row => {
                 const schedule = [];
                 let extraHungry = false;
+                const lunchSelections = new Set();
+                const classSelections = new Set();
                 
                 // Process regular honor columns
                 regularHonorColumns.forEach(column => {
                     const value = row[column];
                     if (value && value.trim() !== '') {
                         const honorInfo = extractHonorInfo(column);
+                        classSelections.add(formatClassLabel(honorInfo.honor, honorInfo.location));
                         schedule.push({
                             time: extractTimeSlot(cleanColumnName(column)),
                             honor: honorInfo.honor,
@@ -1234,6 +1296,9 @@
                     const quantity = parseLunchQuantity(value);
                     if (quantity > 1) {
                         extraHungry = true;
+                    }
+                    if (quantity > 0) {
+                        lunchSelections.add(extractLunchItem(column));
                     }
                     const formatted = formatLunchItem(column, value);
                     if (formatted) {
@@ -1261,7 +1326,9 @@
                     lastName: row['Last Name'] || '',
                     club: clubName,
                     schedule: schedule,
-                    extraHungry: extraHungry
+                    extraHungry: extraHungry,
+                    lunchItems: Array.from(lunchSelections),
+                    classItems: Array.from(classSelections)
                 };
             }).filter(student => student.schedule.length > 0);
 
@@ -1337,6 +1404,36 @@
                 `;
                 clubList.appendChild(item);
             });
+
+            // Get unique classes
+            const classes = [...new Set(students.flatMap(student => student.classItems))].sort();
+            const classList = document.getElementById('classFilterList');
+            classList.innerHTML = '';
+            
+            classes.forEach((className, index) => {
+                const item = document.createElement('div');
+                item.className = 'filter-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="class-${index}" checked onchange="applyFilters()">
+                    <label for="class-${index}"><span>${className}</span></label>
+                `;
+                classList.appendChild(item);
+            });
+
+            // Get unique lunch selections
+            const lunchSelections = [...new Set(students.flatMap(student => student.lunchItems))].sort();
+            const lunchList = document.getElementById('lunchFilterList');
+            lunchList.innerHTML = '';
+            
+            lunchSelections.forEach((lunchItem, index) => {
+                const item = document.createElement('div');
+                item.className = 'filter-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="lunch-${index}" checked onchange="applyFilters()">
+                    <label for="lunch-${index}"><span>${lunchItem}</span></label>
+                `;
+                lunchList.appendChild(item);
+            });
             
             // Populate person list
             const personList = document.getElementById('personFilterList');
@@ -1362,6 +1459,24 @@
                 clubs.add(label);
             });
             return clubs;
+        }
+
+        function getSelectedClasses() {
+            const classes = new Set();
+            document.querySelectorAll('#classFilterList .filter-item:not(.search-hidden) input:checked').forEach(cb => {
+                const label = cb.parentElement.querySelector('span').textContent;
+                classes.add(label);
+            });
+            return classes;
+        }
+
+        function getSelectedLunchSelections() {
+            const lunchItems = new Set();
+            document.querySelectorAll('#lunchFilterList .filter-item:not(.search-hidden) input:checked').forEach(cb => {
+                const label = cb.parentElement.querySelector('span').textContent;
+                lunchItems.add(label);
+            });
+            return lunchItems;
         }
 
         function getSelectedPeople() {
@@ -1413,6 +1528,8 @@
 
         function applyFilters() {
             const selectedClubs = getSelectedClubs();
+            const selectedClasses = getSelectedClasses();
+            const selectedLunchSelections = getSelectedLunchSelections();
             const selectedPeople = getSelectedPeople();
             const extraHungryOnly = document.getElementById('extraHungryOnly');
             const extraHungrySelected = extraHungryOnly ? extraHungryOnly.checked : false;
@@ -1421,10 +1538,12 @@
             const filteredStudents = allStudents.filter((student, index) => {
                 // Club filter: student must have no club OR club must be selected
                 const clubMatch = !student.club || selectedClubs.has(student.club);
+                const classMatch = student.classItems.length === 0 || student.classItems.some(item => selectedClasses.has(item));
+                const lunchMatch = student.lunchItems.length === 0 || student.lunchItems.some(item => selectedLunchSelections.has(item));
                 // Person filter: student index must be in selected indices
                 const personMatch = selectedPeople.has(index);
                 const extraHungryMatch = !extraHungrySelected || student.extraHungry;
-                return clubMatch && personMatch && extraHungryMatch;
+                return clubMatch && classMatch && lunchMatch && personMatch && extraHungryMatch;
             });
             
             // Regenerate the cards with only filtered students
@@ -1459,9 +1578,63 @@
             applyFilters();
         }
 
+        function selectAllClasses() {
+            document.querySelectorAll('#classFilterList .filter-item:not(.search-hidden) input').forEach(cb => {
+                cb.checked = true;
+            });
+            applyFilters();
+        }
+
+        function deselectAllClasses() {
+            document.querySelectorAll('#classFilterList .filter-item:not(.search-hidden) input').forEach(cb => {
+                cb.checked = false;
+            });
+            applyFilters();
+        }
+
+        function selectAllLunchItems() {
+            document.querySelectorAll('#lunchFilterList .filter-item:not(.search-hidden) input').forEach(cb => {
+                cb.checked = true;
+            });
+            applyFilters();
+        }
+
+        function deselectAllLunchItems() {
+            document.querySelectorAll('#lunchFilterList .filter-item:not(.search-hidden) input').forEach(cb => {
+                cb.checked = false;
+            });
+            applyFilters();
+        }
+
         function filterClubList() {
             const searchTerm = document.getElementById('clubSearch').value.toLowerCase();
             document.querySelectorAll('#clubFilterList .filter-item').forEach(item => {
+                const name = item.querySelector('span').textContent.toLowerCase();
+                if (name.includes(searchTerm)) {
+                    item.classList.remove('search-hidden');
+                } else {
+                    item.classList.add('search-hidden');
+                }
+            });
+            applyFilters();
+        }
+
+        function filterClassList() {
+            const searchTerm = document.getElementById('classSearch').value.toLowerCase();
+            document.querySelectorAll('#classFilterList .filter-item').forEach(item => {
+                const name = item.querySelector('span').textContent.toLowerCase();
+                if (name.includes(searchTerm)) {
+                    item.classList.remove('search-hidden');
+                } else {
+                    item.classList.add('search-hidden');
+                }
+            });
+            applyFilters();
+        }
+
+        function filterLunchList() {
+            const searchTerm = document.getElementById('lunchSearch').value.toLowerCase();
+            document.querySelectorAll('#lunchFilterList .filter-item').forEach(item => {
                 const name = item.querySelector('span').textContent.toLowerCase();
                 if (name.includes(searchTerm)) {
                     item.classList.remove('search-hidden');
@@ -1488,6 +1661,16 @@
         function clearClubSearch() {
             document.getElementById('clubSearch').value = '';
             filterClubList();
+        }
+
+        function clearClassSearch() {
+            document.getElementById('classSearch').value = '';
+            filterClassList();
+        }
+
+        function clearLunchSearch() {
+            document.getElementById('lunchSearch').value = '';
+            filterLunchList();
         }
 
         function clearPersonSearch() {
@@ -1528,8 +1711,12 @@
         function resetReport() {
             cardsContainer.innerHTML = '';
             document.getElementById('clubFilterList').innerHTML = '';
+            document.getElementById('classFilterList').innerHTML = '';
+            document.getElementById('lunchFilterList').innerHTML = '';
             document.getElementById('personFilterList').innerHTML = '';
             document.getElementById('clubSearch').value = '';
+            document.getElementById('classSearch').value = '';
+            document.getElementById('lunchSearch').value = '';
             document.getElementById('personSearch').value = '';
             const extraHungryOnly = document.getElementById('extraHungryOnly');
             if (extraHungryOnly) {

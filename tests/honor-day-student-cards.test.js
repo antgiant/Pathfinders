@@ -67,6 +67,23 @@ describe('Honor Day Student Cards Report', () => {
             expect(html).toMatch(/id="extraHungryOnly"/);
             expect(html).toMatch(/Extra Hungry/);
         });
+
+        test('should have class filter controls', () => {
+            expect(html).toMatch(/id="classSearch"/);
+            expect(html).toMatch(/id="classFilterList"/);
+            expect(html).toMatch(/Filter by Honor Class/);
+        });
+
+        test('should have lunch selection filter controls', () => {
+            expect(html).toMatch(/id="lunchSearch"/);
+            expect(html).toMatch(/id="lunchFilterList"/);
+            expect(html).toMatch(/Filter by Lunch Selection/);
+        });
+
+        test('should have collapsible filter section', () => {
+            expect(html).toMatch(/<details class="filter-section"/);
+            expect(html).toMatch(/<summary>🔍 Filter Cards to Print<\/summary>/);
+        });
     });
 
     describe('Info Sections', () => {
@@ -181,6 +198,10 @@ describe('Honor Day Student Cards Report', () => {
             expect(html).toMatch(/function findClubColumn\(/);
         });
 
+        test('should have class label formatter', () => {
+            expect(html).toMatch(/function formatClassLabel\(/);
+        });
+
         test('should collapse lunch items into single entry', () => {
             expect(html).toMatch(/lunchItems\.join/);
         });
@@ -198,6 +219,11 @@ describe('Honor Day Student Cards Report', () => {
             expect(html).toMatch(/extraHungrySelected/);
         });
 
+        test('should filter by class and lunch selections', () => {
+            expect(html).toMatch(/classMatch/);
+            expect(html).toMatch(/lunchMatch/);
+        });
+
         test('should remove click instructions from column names', () => {
             expect(html).toMatch(/Click on time to see options for honors/i);
         });
@@ -213,6 +239,20 @@ describe('Honor Day Student Cards Report', () => {
 
         test('should limit to 9 schedule items', () => {
             expect(html).toMatch(/maxItems = 9/);
+        });
+
+        test('should have class filter functions', () => {
+            expect(html).toMatch(/function filterClassList\(/);
+            expect(html).toMatch(/function clearClassSearch\(/);
+            expect(html).toMatch(/function selectAllClasses\(/);
+            expect(html).toMatch(/function deselectAllClasses\(/);
+        });
+
+        test('should have lunch filter functions', () => {
+            expect(html).toMatch(/function filterLunchList\(/);
+            expect(html).toMatch(/function clearLunchSearch\(/);
+            expect(html).toMatch(/function selectAllLunchItems\(/);
+            expect(html).toMatch(/function deselectAllLunchItems\(/);
         });
     });
 
