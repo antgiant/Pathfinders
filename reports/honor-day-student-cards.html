@@ -897,6 +897,15 @@
             <h3>🔍 Filter Cards to Print</h3>
             <div class="filter-row">
                 <div class="filter-group">
+                    <label>Lunch Filters</label>
+                    <div class="filter-item">
+                        <input type="checkbox" id="extraHungryOnly" onchange="applyFilters()">
+                        <label for="extraHungryOnly"><span>Extra Hungry (any lunch item x2+)</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group">
                     <label>Filter by Club Name</label>
                     <div class="search-wrapper">
                         <input type="text" class="filter-search" id="clubSearch" placeholder="Search clubs..." oninput="filterClubList()">
@@ -1202,6 +1211,7 @@
             // Build student schedules
             const students = rows.map(row => {
                 const schedule = [];
+                let extraHungry = false;
                 
                 // Process regular honor columns
                 regularHonorColumns.forEach(column => {
@@ -1221,6 +1231,10 @@
                 const lunchItems = [];
                 lunchColumns.forEach(column => {
                     const value = row[column];
+                    const quantity = parseLunchQuantity(value);
+                    if (quantity > 1) {
+                        extraHungry = true;
+                    }
                     const formatted = formatLunchItem(column, value);
                     if (formatted) {
                         lunchItems.push(formatted);
@@ -1246,7 +1260,8 @@
                     firstName: row['First Name'] || '',
                     lastName: row['Last Name'] || '',
                     club: clubName,
-                    schedule: schedule
+                    schedule: schedule,
+                    extraHungry: extraHungry
                 };
             }).filter(student => student.schedule.length > 0);
 
@@ -1399,6 +1414,8 @@
         function applyFilters() {
             const selectedClubs = getSelectedClubs();
             const selectedPeople = getSelectedPeople();
+            const extraHungryOnly = document.getElementById('extraHungryOnly');
+            const extraHungrySelected = extraHungryOnly ? extraHungryOnly.checked : false;
             
             // Filter students based on selected clubs AND selected people
             const filteredStudents = allStudents.filter((student, index) => {
@@ -1406,7 +1423,8 @@
                 const clubMatch = !student.club || selectedClubs.has(student.club);
                 // Person filter: student index must be in selected indices
                 const personMatch = selectedPeople.has(index);
-                return clubMatch && personMatch;
+                const extraHungryMatch = !extraHungrySelected || student.extraHungry;
+                return clubMatch && personMatch && extraHungryMatch;
             });
             
             // Regenerate the cards with only filtered students
@@ -1513,6 +1531,10 @@
             document.getElementById('personFilterList').innerHTML = '';
             document.getElementById('clubSearch').value = '';
             document.getElementById('personSearch').value = '';
+            const extraHungryOnly = document.getElementById('extraHungryOnly');
+            if (extraHungryOnly) {
+                extraHungryOnly.checked = false;
+            }
             allStudents = [];
             fileInput.value = '';
             reportContainer.style.display = 'none';

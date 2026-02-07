@@ -62,6 +62,11 @@ describe('Honor Day Student Cards Report', () => {
         test('should have cards container for generated content', () => {
             expect(html).toMatch(/id="cardsContainer"/);
         });
+
+        test('should have extra hungry filter checkbox', () => {
+            expect(html).toMatch(/id="extraHungryOnly"/);
+            expect(html).toMatch(/Extra Hungry/);
+        });
     });
 
     describe('Info Sections', () => {
@@ -186,6 +191,11 @@ describe('Honor Day Student Cards Report', () => {
 
         test('should filter columns starting with time pattern', () => {
             expect(html).toMatch(/\\d\{1,2\}:\\d\{2\}/);
+        });
+
+        test('should filter by extra hungry lunch quantities', () => {
+            expect(html).toMatch(/extraHungryMatch/);
+            expect(html).toMatch(/extraHungrySelected/);
         });
 
         test('should remove click instructions from column names', () => {
