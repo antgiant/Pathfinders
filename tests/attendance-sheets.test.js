@@ -64,6 +64,22 @@ describe('Attendance Sheets Report', () => {
         test('should have sheets container for generated content', () => {
             expect(html).toMatch(/id="sheetsContainer"/);
         });
+
+        test('should have checklist options section', () => {
+            expect(html).toMatch(/id="optionsSection"/);
+            expect(html).toMatch(/class="filter-section/);
+        });
+
+        test('should have controls for shirt checkbox and emoji', () => {
+            expect(html).toMatch(/id="toggleShirt"/);
+            expect(html).toMatch(/id="shirtEmojiInput"/);
+        });
+
+        test('should have controls for extra checkboxes', () => {
+            expect(html).toMatch(/id="extraCheckboxLabel"/);
+            expect(html).toMatch(/id="addExtraCheckboxBtn"/);
+            expect(html).toMatch(/id="extraCheckboxList"/);
+        });
     });
 
     describe('User Instructions', () => {
@@ -89,6 +105,10 @@ describe('Attendance Sheets Report', () => {
             expect(html).toMatch(/function generateReport\(/);
         });
 
+        test('should have renderReport function for regenerating output', () => {
+            expect(html).toMatch(/function renderReport\(/);
+        });
+
         test('should have resetReport function', () => {
             expect(html).toMatch(/function resetReport\(/);
         });
@@ -105,6 +125,11 @@ describe('Attendance Sheets Report', () => {
             expect(html).toMatch(/firstName\.localeCompare/);
             expect(html).toMatch(/lastName\.localeCompare/);
         });
+
+        test('should have configurable checklist options', () => {
+            expect(html).toMatch(/reportOptions/);
+            expect(html).toMatch(/extraCheckboxes/);
+        });
     });
 
     describe('Print Styles', () => {
@@ -118,6 +143,10 @@ describe('Attendance Sheets Report', () => {
 
         test('should hide navigation when printing', () => {
             expect(html).toMatch(/nav.*display:\s*none/s);
+        });
+
+        test('should hide options section when printing', () => {
+            expect(html).toMatch(/@media print[\s\S]*filter-section[\s\S]*display:\s*none/);
         });
     });
 
@@ -154,6 +183,11 @@ describe('Attendance Sheets Report', () => {
         test('should include shirt emoji checkbox', () => {
             expect(html).toMatch(/👕/);
             expect(html).toMatch(/class="shirt-checkbox"/);
+        });
+
+        test('should include extra checkbox label styling', () => {
+            expect(html).toMatch(/checkbox-label/);
+            expect(html).toMatch(/extra-checkbox-cell/);
         });
 
         test('should include attendee name', () => {
