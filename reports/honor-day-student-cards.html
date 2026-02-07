@@ -1047,6 +1047,33 @@
             return columnName.replace(/^lunch\s*/i, '').trim();
         }
 
+        function parseLunchQuantity(value) {
+            if (!value) return 0;
+            const trimmed = String(value).trim();
+            if (!trimmed) return 0;
+            const numeric = Number(trimmed);
+            if (Number.isFinite(numeric)) {
+                return numeric;
+            }
+            const match = trimmed.match(/\d+/);
+            if (match) {
+                return parseInt(match[0], 10);
+            }
+            return 1;
+        }
+
+        function formatLunchItem(columnName, value) {
+            const item = extractLunchItem(columnName);
+            const quantity = parseLunchQuantity(value);
+            if (quantity <= 0) {
+                return null;
+            }
+            if (quantity > 1) {
+                return `${item} (x${quantity})`;
+            }
+            return item;
+        }
+
         function cleanColumnName(columnName) {
             // Remove " - Click on time to see options for honors"
             return columnName.replace(/ - Click on time to see options for honors/gi, '');
@@ -1194,8 +1221,9 @@
                 const lunchItems = [];
                 lunchColumns.forEach(column => {
                     const value = row[column];
-                    if (value && value.trim() !== '') {
-                        lunchItems.push(extractLunchItem(column));
+                    const formatted = formatLunchItem(column, value);
+                    if (formatted) {
+                        lunchItems.push(formatted);
                     }
                 });
                 

@@ -156,6 +156,18 @@ describe('Honor Day Student Cards Report', () => {
             expect(html).toMatch(/function extractLunchItem\(/);
         });
 
+        test('should have parseLunchQuantity function', () => {
+            expect(html).toMatch(/function parseLunchQuantity\(/);
+        });
+
+        test('should format lunch items with quantities', () => {
+            expect(html).toMatch(/\$\{item\}\s*\(x\$\{quantity\}\)/);
+        });
+
+        test('should have formatLunchItem function', () => {
+            expect(html).toMatch(/function formatLunchItem\(/);
+        });
+
         test('should have extractHonorInfo function', () => {
             expect(html).toMatch(/function extractHonorInfo\(/);
         });
