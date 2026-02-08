@@ -210,6 +210,21 @@ describe('Honor Day Student Cards Report', () => {
             expect(html).toMatch(/startsWith\(['"]lunch['"]\)/i);
         });
 
+        test('should include lunch selection columns in lunch detection', () => {
+            expect(html).toMatch(/lunch selection/i);
+        });
+
+        test('should expand lunch selection combos with standard sides', () => {
+            expect(html).toMatch(/Fries/);
+            expect(html).toMatch(/Chips/);
+            expect(html).toMatch(/Drink/);
+        });
+
+        test('should format lunch list without surrounding parentheses', () => {
+            expect(html).toMatch(/honor:\s*lunchItems\.join/);
+            expect(html).toMatch(/Pizza,\s*Chips,\s*Drink/);
+        });
+
         test('should filter columns starting with time pattern', () => {
             expect(html).toMatch(/\\d\{1,2\}:\\d\{2\}/);
         });

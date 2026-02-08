@@ -878,7 +878,7 @@
                             <div class="sample-schedule-item">
                                 <span class="sample-initial-line"></span>
                                 <span>Lunch</span>
-                                <span class="sample-content">(Pizza, Chips, Drink)</span>
+                        <span class="sample-content">Pizza, Chips, Drink</span>
                             </div>
                             <div class="sample-schedule-item">
                                 <span class="sample-initial-line"></span>
@@ -1083,9 +1083,8 @@
         }
 
         function isHonorColumn(columnName) {
-            const lowerName = columnName.toLowerCase();
-            // Check if starts with "lunch" or a time pattern (e.g., "8:00", "10:00-12:00")
-            if (lowerName.startsWith('lunch')) {
+            // Lunch columns (including "Lunch Selection") or a time pattern (e.g., "8:00", "10:00-12:00")
+            if (isLunchColumn(columnName)) {
                 return true;
             }
             // Check for time pattern at start (digits followed by colon)
@@ -1096,7 +1095,8 @@
         }
 
         function isLunchColumn(columnName) {
-            return columnName.toLowerCase().startsWith('lunch');
+            const lowerName = columnName.toLowerCase().trim();
+            return lowerName.startsWith('lunch') || lowerName.includes('lunch selection');
         }
 
         function extractLunchItem(columnName) {
@@ -1104,6 +1104,11 @@
             const match = columnName.match(/^Lunch\s*-\s*(.+)$/i);
             if (match) {
                 return match[1].trim();
+            }
+            // Extract item from "*Lunch Selection ... - Burger - Veggie" -> "Burger - Veggie"
+            const selectionMatch = columnName.match(/^\*?\s*Lunch Selection.*-\s*(.+)$/i);
+            if (selectionMatch) {
+                return selectionMatch[1].trim();
             }
             return columnName.replace(/^lunch\s*/i, '').trim();
         }
@@ -1121,6 +1126,38 @@
                 return parseInt(match[0], 10);
             }
             return 1;
+        }
+
+        function isLunchSelectionCombo(columnName) {
+            return /lunch selection/i.test(columnName) && /comes with fries, chips, drink/i.test(columnName);
+        }
+
+        function parseLunchItemName(itemName) {
+            if (!itemName) {
+                return { name: itemName, multiplier: 1 };
+            }
+            const match = itemName.match(/^(.*)\s*\((\d+)\)\s*$/);
+            if (match) {
+                return {
+                    name: match[1].trim(),
+                    multiplier: parseInt(match[2], 10)
+                };
+            }
+            return { name: itemName, multiplier: 1 };
+        }
+
+        function addLunchCount(counts, itemName, quantity) {
+            if (!itemName || quantity <= 0) return;
+            const current = counts.get(itemName) || 0;
+            counts.set(itemName, current + quantity);
+        }
+
+        function formatLunchDisplayItem(itemName, quantity) {
+            if (!itemName) return null;
+            if (quantity > 1) {
+                return `${itemName} (x${quantity})`;
+            }
+            return itemName;
         }
 
         function formatLunchItem(columnName, value) {
@@ -1273,6 +1310,7 @@
                 let extraHungry = false;
                 const lunchSelections = new Set();
                 const classSelections = new Set();
+                const lunchCounts = new Map();
                 
                 // Process regular honor columns
                 regularHonorColumns.forEach(column => {
@@ -1290,7 +1328,6 @@
                 });
                 
                 // Collect lunch items into a single entry
-                const lunchItems = [];
                 lunchColumns.forEach(column => {
                     const value = row[column];
                     const quantity = parseLunchQuantity(value);
@@ -1298,18 +1335,30 @@
                         extraHungry = true;
                     }
                     if (quantity > 0) {
-                        lunchSelections.add(extractLunchItem(column));
-                    }
-                    const formatted = formatLunchItem(column, value);
-                    if (formatted) {
-                        lunchItems.push(formatted);
+                        const rawItemName = extractLunchItem(column);
+                        const parsedItem = parseLunchItemName(rawItemName);
+                        const itemName = parsedItem.name;
+                        const itemMultiplier = parsedItem.multiplier;
+                        lunchSelections.add(itemName);
+                        addLunchCount(lunchCounts, itemName, quantity * itemMultiplier);
+
+                        if (isLunchSelectionCombo(column) && !/^none$/i.test(itemName)) {
+                            ['Fries', 'Chips', 'Drink'].forEach(side => {
+                                lunchSelections.add(side);
+                                addLunchCount(lunchCounts, side, quantity);
+                            });
+                        }
                     }
                 });
+
+                const lunchItems = Array.from(lunchCounts.entries())
+                    .map(([itemName, quantity]) => formatLunchDisplayItem(itemName, quantity))
+                    .filter(Boolean);
                 
                 if (lunchItems.length > 0) {
                     schedule.push({
                         time: 'Lunch',
-                        honor: '(' + lunchItems.join(', ') + ')',
+                        honor: lunchItems.join(', '),
                         location: '',
                         sortOrder: 1200 // Noon
                     });
