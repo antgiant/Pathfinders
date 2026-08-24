@@ -188,6 +188,22 @@ describe('Honor Day Attendance Report', () => {
         test('should hide navigation when printing', () => {
             expect(html).toMatch(/nav.*display:\s*none/s);
         });
+
+        test('should anchor page footer with absolute positioning, not flex auto-margin, to keep it from splitting onto a second page', () => {
+            const printStart = html.indexOf('@media print');
+            const pageRuleStart = html.indexOf('@page', printStart);
+            expect(printStart).toBeGreaterThan(-1);
+            expect(pageRuleStart).toBeGreaterThan(printStart);
+            const printBlock = html.slice(printStart, pageRuleStart);
+
+            const footerRuleMatch = printBlock.match(/\.page-footer\s*\{([\s\S]*?)\}/);
+            expect(footerRuleMatch).toBeTruthy();
+            const footerRule = footerRuleMatch[1];
+
+            expect(footerRule).toMatch(/position:\s*absolute/);
+            expect(footerRule).toMatch(/bottom:\s*0/);
+            expect(footerRule).not.toMatch(/margin-top:\s*auto/);
+        });
     });
 
     describe('Accessibility', () => {
