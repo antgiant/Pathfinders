@@ -204,6 +204,22 @@ describe('Honor Day Attendance Report', () => {
             expect(footerRule).toMatch(/bottom:\s*0/);
             expect(footerRule).not.toMatch(/margin-top:\s*auto/);
         });
+
+        test('should size the print page in fixed inches, not vh, to avoid Safari printing each page twice', () => {
+            const printStart = html.indexOf('@media print');
+            const pageRuleStart = html.indexOf('@page', printStart);
+            const printBlock = html.slice(printStart, pageRuleStart);
+
+            const pageContainerMatch = printBlock.match(/\.attendance-page\s*\{([\s\S]*?)\}/);
+            expect(pageContainerMatch).toBeTruthy();
+            const pageContainerRule = pageContainerMatch[1];
+
+            // Safari computes vh in print against the browser window, not the
+            // physical page, which made the page box taller than the sheet
+            // and pushed content onto a spurious second page per report page.
+            expect(pageContainerRule).not.toMatch(/vh/);
+            expect(pageContainerRule).toMatch(/height:\s*10\.4in/);
+        });
     });
 
     describe('Accessibility', () => {
