@@ -149,7 +149,7 @@ describe('Attendance Sheets Report', () => {
             expect(html).toMatch(/@media print[\s\S]*filter-section[\s\S]*display:\s*none/);
         });
 
-        test('should anchor page footer with absolute positioning, not flex auto-margin, to keep it from splitting onto a second page', () => {
+        test('should anchor page footer with fixed positioning so it repeats at the bottom of every physical page', () => {
             const printStart = html.indexOf('@media print');
             const pageRuleStart = html.indexOf('@page', printStart);
             expect(printStart).toBeGreaterThan(-1);
@@ -160,12 +160,15 @@ describe('Attendance Sheets Report', () => {
             expect(footerRuleMatch).toBeTruthy();
             const footerRule = footerRuleMatch[1];
 
-            expect(footerRule).toMatch(/position:\s*absolute/);
+            // position: fixed anchors to the page itself in print, so the
+            // footer no longer depends on the page container being sized to
+            // exactly one page's height to land at the bottom.
+            expect(footerRule).toMatch(/position:\s*fixed/);
             expect(footerRule).toMatch(/bottom:\s*0/);
             expect(footerRule).not.toMatch(/margin-top:\s*auto/);
         });
 
-        test('should size the print page in fixed inches, not vh, to avoid Safari printing each page twice', () => {
+        test('should not force the print page container to a fixed height, to avoid Safari printing each page twice', () => {
             const printStart = html.indexOf('@media print');
             const pageRuleStart = html.indexOf('@page', printStart);
             const printBlock = html.slice(printStart, pageRuleStart);
@@ -174,11 +177,14 @@ describe('Attendance Sheets Report', () => {
             expect(pageContainerMatch).toBeTruthy();
             const pageContainerRule = pageContainerMatch[1];
 
-            // Safari computes vh in print against the browser window, not the
-            // physical page, which made the page box taller than the sheet
-            // and pushed content onto a spurious second page per report page.
+            // Any explicit height on the page container (100vh, or even a
+            // fixed inch value meant to match the page) risked being a hair
+            // taller than the actual printable area, spilling onto a
+            // spurious second page per report page. Letting the container
+            // size to its own content and relying on break-after for page
+            // separation avoids that entirely.
             expect(pageContainerRule).not.toMatch(/vh/);
-            expect(pageContainerRule).toMatch(/height:\s*10\.4in/);
+            expect(pageContainerRule).not.toMatch(/height:/);
         });
     });
 
