@@ -168,6 +168,25 @@ describe('Attendance Sheets Report', () => {
             expect(footerRule).not.toMatch(/margin-top:\s*auto/);
         });
 
+        test('should keep the page footer inside the printable area and make it legible on paper', () => {
+            const printStart = html.indexOf('@media print');
+            const pageRuleStart = html.indexOf('@page', printStart);
+            const printBlock = html.slice(printStart, pageRuleStart);
+            const footerRule = printBlock.match(/\.page-footer\s*\{([\s\S]*?)\}/)[1];
+
+            // Dark, reasonably sized text that survives ink-saver / grayscale modes
+            expect(footerRule).toMatch(/color:\s*#000/);
+            expect(footerRule).toMatch(/print-color-adjust:\s*exact/);
+            const size = parseFloat(footerRule.match(/font-size:\s*([\d.]+)pt/)[1]);
+            expect(size).toBeGreaterThanOrEqual(8);
+
+            // Bottom @page margin must clear the typical ~0.25in unprintable edge
+            const pageRule = html.slice(pageRuleStart).match(/@page\s*\{([\s\S]*?)\}/)[1];
+            const margin = pageRule.match(/margin:\s*([^;]+);/)[1].trim().split(/\s+/);
+            const bottom = parseFloat(margin.length >= 3 ? margin[2] : margin[0]);
+            expect(bottom).toBeGreaterThanOrEqual(0.5);
+        });
+
         test('should not force the print page container to a fixed height, to avoid Safari printing each page twice', () => {
             const printStart = html.indexOf('@media print');
             const pageRuleStart = html.indexOf('@page', printStart);

@@ -568,10 +568,14 @@
                 right: 0;
                 bottom: 0;
                 margin-top: 0;
-                padding: 0.1in 0;
-                font-size: 7pt;
+                padding: 0.05in 0;
+                font-size: 9pt;
+                color: #000;
+                background: #fff;
                 text-align: center;
                 border-top: none;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
             .filter-section,
@@ -580,9 +584,12 @@
             }
         }
 
+        /* Bottom margin is larger than the top/sides so the fixed footer sits
+           inside the printable area of real printers (most cannot print
+           within ~0.25in of the paper edge). */
         @page {
             size: letter;
-            margin: 0.3in;
+            margin: 0.3in 0.3in 0.6in 0.3in;
         }
     </style>
 </head>
