@@ -189,7 +189,7 @@ describe('Honor Day Attendance Report', () => {
             expect(html).toMatch(/nav.*display:\s*none/s);
         });
 
-        test('should anchor page footer with fixed positioning so it repeats at the bottom of every physical page', () => {
+        test('should anchor each sheet footer to the bottom of its own printed page', () => {
             const printStart = html.indexOf('@media print');
             const pageRuleStart = html.indexOf('@page', printStart);
             expect(printStart).toBeGreaterThan(-1);
@@ -200,10 +200,10 @@ describe('Honor Day Attendance Report', () => {
             expect(footerRuleMatch).toBeTruthy();
             const footerRule = footerRuleMatch[1];
 
-            // position: fixed anchors to the page itself in print, so the
-            // footer no longer depends on the page container being sized to
-            // exactly one page's height to land at the bottom.
-            expect(footerRule).toMatch(/position:\s*fixed/);
+            // Each printed page is a .print-sheet (position: relative) holding
+            // its own footer, so the footer can show per-page numbers and
+            // never overlaps table rows.
+            expect(footerRule).toMatch(/position:\s*absolute/);
             expect(footerRule).toMatch(/bottom:\s*0/);
             expect(footerRule).not.toMatch(/margin-top:\s*auto/);
         });
@@ -225,6 +225,16 @@ describe('Honor Day Attendance Report', () => {
             const margin = pageRule.match(/margin:\s*([^;]+);/)[1].trim().split(/\s+/);
             const bottom = parseFloat(margin.length >= 3 ? margin[2] : margin[0]);
             expect(bottom).toBeGreaterThanOrEqual(0.5);
+        });
+
+        test('should paginate sections into print sheets and only number pages when a section spans more than one', () => {
+            expect(html).toMatch(/ROWS_PER_PRINT_PAGE\s*=\s*\d+/);
+            expect(html).toMatch(/class="print-sheet"/);
+            expect(html).toMatch(/totalSheets\s*>\s*1\s*\?[^:]*Page \$\{s \+ 1\} of \$\{totalSheets\}[^:]*:\s*''/);
+            const printBlock = html.slice(html.indexOf('@media print'), html.indexOf('@page', html.indexOf('@media print')));
+            expect(printBlock).toMatch(/\.print-sheet\s*\{[^}]*position:\s*relative/);
+            expect(printBlock).toMatch(/\.print-sheet:not\(:last-child\)\s*\{[^}]*break-after:\s*page/);
+            expect(printBlock).toMatch(/\.attendance-row\s*\{[^}]*height:\s*0\.22in/);
         });
 
         test('should not force the print page container to a fixed height, to avoid Safari printing each page twice', () => {

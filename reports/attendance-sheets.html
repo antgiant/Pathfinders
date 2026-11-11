@@ -449,8 +449,14 @@
             min-height: 1rem;
         }
 
+        .print-sheet:not(:last-child) {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px dashed #ccc;
+        }
+
         .page-footer {
-            margin-top: auto;
+            margin-top: 1rem;
             text-align: center;
             font-size: 0.85rem;
             color: #666;
@@ -562,8 +568,31 @@
                 font-size: 8pt;
             }
 
+            /* Each printed page is its own sheet with its own in-flow footer, so the
+               footer can carry per-page numbers and never overlaps table rows. */
+            .print-sheet {
+                position: relative;
+                min-height: 9.7in;
+                margin: 0;
+                padding: 0;
+                border-bottom: none;
+            }
+
+            .print-sheet:not(:last-child) {
+                break-after: page;
+                page-break-after: always;
+            }
+
+            .attendance-row {
+                height: 0.22in;
+            }
+
+            .attendee-name {
+                white-space: nowrap;
+            }
+
             .page-footer {
-                position: fixed;
+                position: absolute;
                 left: 0;
                 right: 0;
                 bottom: 0;
@@ -978,21 +1007,21 @@
                 return `<td class="checkbox-cell extra-checkbox-cell"><span class="checkbox-with-label"><span class="checkbox"></span><span class="checkbox-label">${label}</span></span></td>`;
             }).join('');
 
+            // Rows that fit on one printed page below the group header and above the footer
+            const ROWS_PER_PRINT_PAGE = 40;
+
             sortedGroupNames.forEach(groupName => {
                 const members = groups[groupName];
                 const page = document.createElement('div');
                 page.className = 'attendance-page';
                 const safeGroupName = escapeHtml(groupName);
 
-                let html = `<table class="attendance-table">`;
-                html += `<thead><tr><th colspan="${totalColumns}" class="group-header">${safeGroupName}</th></tr></thead>`;
-                html += '<tbody>';
-
+                const rowsHtml = [];
                 members.forEach((member, index) => {
                     const rowClass = index % 2 === 1 ? 'attendance-row even-row' : 'attendance-row';
                     const firstName = escapeHtml(member.firstName || '');
                     const lastName = escapeHtml(member.lastName || '');
-                    html += `
+                    rowsHtml.push(`
                         <tr class="${rowClass}">
                             <td class="row-number">${index + 1}.</td>
                             <td class="checkbox-cell"><span class="checkbox"></span></td>
@@ -1000,14 +1029,14 @@
                             ${extraCheckboxCells}
                             <td class="attendee-name">${firstName} ${lastName}</td>
                         </tr>
-                    `;
+                    `);
                 });
 
                 // Add 3 blank rows for write-ins
                 const startNum = members.length + 1;
                 for (let i = 0; i < 3; i++) {
                     const rowClass = (members.length + i) % 2 === 1 ? 'attendance-row write-in-row even-row' : 'attendance-row write-in-row';
-                    html += `
+                    rowsHtml.push(`
                         <tr class="${rowClass}">
                             <td class="row-number">${startNum + i}.</td>
                             <td class="checkbox-cell"><span class="checkbox"></span></td>
@@ -1015,11 +1044,20 @@
                             ${extraCheckboxCells}
                             <td class="attendee-name write-in-line"></td>
                         </tr>
-                    `;
+                    `);
                 }
 
-                html += '</tbody></table>';
-                html += `<div class="page-footer">Printed: ${printDate}</div>`;
+                const totalSheets = Math.ceil(rowsHtml.length / ROWS_PER_PRINT_PAGE);
+                let html = '';
+                for (let s = 0; s < totalSheets; s++) {
+                    const sheetRows = rowsHtml.slice(s * ROWS_PER_PRINT_PAGE, (s + 1) * ROWS_PER_PRINT_PAGE).join('');
+                    // Page numbers only appear when a section spans more than one printed page
+                    const pageLabel = totalSheets > 1 ? ` &middot; Page ${s + 1} of ${totalSheets}` : '';
+                    html += `<div class="print-sheet"><table class="attendance-table">`;
+                    html += `<thead><tr><th colspan="${totalColumns}" class="group-header">${safeGroupName}</th></tr></thead>`;
+                    html += `<tbody>${sheetRows}</tbody></table>`;
+                    html += `<div class="page-footer">Printed: ${printDate}${pageLabel}</div></div>`;
+                }
 
                 page.innerHTML = html;
                 sheetsContainer.appendChild(page);

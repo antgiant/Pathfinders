@@ -2,16 +2,13 @@
 
 ## Print footer (printed date / pagination) shows in print preview but not on paper
 
-**Status:** Fix implemented (bottom `@page` margin raised to 0.6in, footer now 9pt black with `print-color-adjust: exact`). **Still needs confirmation on a real printer/paper** before the checklist below can be closed; page numbers are not yet added.
+**Status:** Fix implemented. Bottom `@page` margin is 0.6in, the footer is 9pt black with `print-color-adjust: exact`, and each section is split into per-page `.print-sheet` blocks (40 rows each) with an in-flow footer, so it can't overlap rows. `Page X of Y` shows only when a section spans more than one printed page. Verified via Chromium PDF render; **still needs confirmation on a real printer/paper.**
 
 **Symptom:** The footer line at the bottom of each page (`Printed: <date>` and pagination info) is visible in the browser's print preview but does not appear on the physical printout.
 
 **Affected files:** `reports/attendance-sheets.html`, `reports/honor-day.html` (both use a `.page-footer` element; `reports/honor-day-student-cards.html` explicitly sets `@page` margin boxes to `content: none`).
 
-**Current setup (for reference):**
-- `@page { size: letter; margin: 0.3in; }`
-- `@media print { .page-footer { position: fixed; bottom: 0; padding: 0.1in 0; font-size: 7pt; ... } }`
-- Footer is injected per page in JS: `<div class="page-footer">Printed: ${printDate}</div>`
+**Original setup (before fix):** `@page` margin 0.3in; `.page-footer` was `position: fixed; bottom: 0; font-size: 7pt; color: #666`.
 
 ### Investigation checklist
 
